@@ -1,0 +1,2 @@
+{% if resource.exportable %}<a href="{% url 'dashboard:'|add:resource.slug|add:'_export' %}{% query_transform page=None %}" class="btn btn-secondary">{% icon "download" "size-4" %}Export CSV</a>{% endif %}
+{% if resource.can_create and can_edit %}<a href="{% url 'dashboard:'|add:resource.slug|add:'_create' %}" class="btn btn-primary">{% icon "plus" "size-4" %}Ajouter</a>{% endif %}

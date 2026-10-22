@@ -1,0 +1,5 @@
+<div class="overflow-hidden rounded-2xl border border-line bg-white shadow-[var(--shadow-lift)]">
+  {% for kind, title, subtitle, url, icon_name in results %}
+  <a href="{{ url }}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-surface"><span class="grid size-8 place-items-center rounded-lg bg-primary-50 text-primary">{% icon icon_name "size-4" %}</span><span class="min-w-0 flex-1"><span class="block truncate text-sm font-medium text-ink">{{ title }}</span><span class="block truncate text-xs text-slate-500">{{ kind }} · {{ subtitle }}</span></span></a>
+  {% empty %}<p class="px-4 py-4 text-sm text-slate-400">{% if q|length < 2 %}Saisissez au moins 2 caractères.{% else %}Aucun résultat pour « {{ q }} ».{% endif %}</p>{% endfor %}
+</div>

@@ -1,0 +1,14 @@
+<ol class="relative space-y-5 before:absolute before:inset-y-1 before:left-[1.05rem] before:w-px before:bg-line">
+  {% for a in activities %}
+  <li class="relative flex gap-4">
+    <span class="relative z-10 grid size-9 shrink-0 place-items-center rounded-full ring-4 ring-white
+      {% if a.kind == 'email' %}bg-primary-50 text-primary{% elif a.kind == 'call' or a.kind == 'meeting' or a.kind == 'demo' %}bg-emerald-50 text-emerald-600{% elif a.kind == 'inquiry' %}bg-accent-100 text-accent-600{% elif a.kind == 'follow_up' %}bg-amber-50 text-amber-600{% else %}bg-surface text-slate-500{% endif %}">
+      {% if a.kind == 'email' %}{% icon "mail" "size-4" %}{% elif a.kind == 'call' %}{% icon "phone" "size-4" %}{% elif a.kind == 'meeting' %}{% icon "users" "size-4" %}{% elif a.kind == 'demo' %}{% icon "monitor" "size-4" %}{% elif a.kind == 'inquiry' %}{% icon "inbox" "size-4" %}{% elif a.kind == 'status' %}{% icon "refresh-cw" "size-4" %}{% elif a.kind == 'assignment' %}{% icon "user-check" "size-4" %}{% elif a.kind == 'follow_up' %}{% icon "calendar-check" "size-4" %}{% else %}{% icon "notebook-pen" "size-4" %}{% endif %}
+    </span>
+    <div class="min-w-0 flex-1 pt-1">
+      <p class="text-xs text-slate-500"><span class="font-semibold text-ink">{{ a.get_kind_display }}</span> · {{ a.author|default:"Système" }} · <time datetime="{{ a.created_at|date:'c' }}" title="{{ a.created_at|date:'d/m/Y H:i' }}">{{ a.created_at|date:"d/m/Y H:i" }}</time>{% if a.inquiry and show_inquiry %} · <a href="{{ a.inquiry.get_dashboard_url }}" class="text-primary">{{ a.inquiry.reference }}</a>{% endif %}</p>
+      <p class="mt-1 whitespace-pre-line break-words text-sm text-slate-700">{{ a.content }}</p>
+    </div>
+  </li>
+  {% empty %}<li class="text-sm text-slate-400">Aucune activité.</li>{% endfor %}
+</ol>

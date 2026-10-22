@@ -1,0 +1,22 @@
+<section class="section {{ section|theme_class }}" {% if section.anchor %}id="{{ section.anchor }}"{% endif %}>
+  {% if section.theme == "dark" %}<div class="grid-pattern absolute inset-0 -z-10"></div><div class="glow right-0 top-0 size-96 bg-primary/25"></div>{% endif %}
+  <div class="container-x">
+    <div class="grid gap-14 lg:grid-cols-12">
+      <div class="lg:col-span-4">
+        {% include "public/includes/section_heading.html" with align="left" %}
+        {% if section.body %}<div class="prose-brand mt-6" data-reveal>{{ section.body|safe }}</div>{% endif %}
+        {% if section.cta_label %}<a href="{{ section.cta_url }}" class="btn {% if section.theme == 'dark' %}btn-light{% else %}btn-secondary{% endif %} mt-8" data-reveal>{{ section.cta_label }} {% icon "arrow-right" "size-4" %}</a>{% endif %}
+      </div>
+      <div class="grid gap-5 sm:grid-cols-2 lg:col-span-8">
+        {% for item in section.items.all %}
+        <div class="{% if section.theme == 'dark' %}card-dark{% else %}card{% endif %}" data-reveal style="--reveal-delay: {% widthratio forloop.counter0 1 60 %}ms">
+          <span class="icon-tile">{% icon item.icon|default:"sparkles" "size-6" %}</span>
+          <h3 class="mt-5 text-lg font-semibold">{{ item.title }}</h3>
+          {% if item.text %}<p class="mt-2.5 text-[0.95rem] leading-relaxed {% if section.theme == 'dark' %}text-slate-400{% else %}text-slate-600{% endif %}">{{ item.text }}</p>{% endif %}
+          {% if item.link_url %}<a href="{{ item.link_url }}" class="link-arrow mt-4">{{ item.link_label|default:"En savoir plus" }} {% icon "arrow-right" "size-4" %}</a>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>

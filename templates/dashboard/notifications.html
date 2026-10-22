@@ -1,0 +1,7 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Notifications{% endblock %}
+{% block content %}
+{% include "dashboard/includes/page_header.html" with title="Notifications" icon="bell" %}
+<div class="dash-card max-w-3xl divide-y divide-line">{% include "dashboard/includes/notifications_menu.html" with items=page_obj %}</div>
+{% include "public/includes/pagination.html" %}
+{% endblock %}

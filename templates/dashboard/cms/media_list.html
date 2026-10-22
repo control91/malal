@@ -1,0 +1,26 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Médiathèque{% endblock %}
+{% block content %}
+{% include "dashboard/includes/page_header.html" with title=resource.label_plural subtitle=resource.description icon=resource.icon actions="dashboard/crud/_list_actions.html" %}
+<form method="get" class="mb-6 max-w-md" hx-get="{{ request.path }}" hx-target="#crud-table" hx-select="#crud-table" hx-swap="outerHTML" hx-trigger="input changed delay:350ms from:input[name=q]"><input type="search" name="q" value="{{ q }}" placeholder="Rechercher un média…" class="field-input"></form>
+<div id="crud-table">
+  {% if rows %}
+  <ul class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+    {% for row in rows %}{% with m=row.obj %}
+    <li class="dash-card overflow-hidden" x-data="{ copied: false }">
+      <a href="{{ row.url }}" class="block aspect-[4/3] bg-surface">{% if m.is_image %}<img src="{{ m.file.url }}" alt="{{ m.alt_text }}" class="size-full object-cover" loading="lazy">{% else %}<span class="grid size-full place-items-center text-slate-400">{% icon "file-text" "size-10" %}<span class="sr-only">{{ m.extension }}</span></span>{% endif %}</a>
+      <div class="p-4">
+        <p class="truncate text-sm font-semibold text-ink">{{ m.title }}</p>
+        <p class="mt-0.5 text-xs text-slate-500">{{ m.extension|upper }} · {{ m.size|filesizeformat }}</p>
+        <div class="mt-3 flex gap-1.5">
+          <button type="button" class="btn btn-secondary btn-sm flex-1" @click="navigator.clipboard.writeText('{{ SITE_URL }}{{ m.file.url }}'); copied = true; setTimeout(() => copied = false, 1500)"><span x-show="!copied">{% icon "copy" "size-3.5" %}Copier l'URL</span><span x-show="copied" x-cloak>Copiée</span></button>
+          {% if can_edit %}<button type="button" class="btn btn-ghost btn-sm !px-2 text-rose-500" @click="$dispatch('confirm', { title: 'Supprimer ce média ?', text: 'Les contenus qui l\'utilisent afficheront un lien brisé.', action: '{% url 'dashboard:medias_delete' m.pk %}', label: 'Supprimer' })">{% icon "trash-2" "size-4" label="Supprimer" %}</button>{% endif %}
+        </div>
+      </div>
+    </li>
+    {% endwith %}{% endfor %}
+  </ul>
+  {% include "public/includes/pagination.html" %}
+  {% else %}<div class="dash-card px-6 py-16 text-center text-slate-500">La médiathèque est vide.</div>{% endif %}
+</div>
+{% endblock %}

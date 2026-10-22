@@ -1,0 +1,47 @@
+{% if rows %}
+<div class="table-wrap">
+  <table class="table">
+    <thead><tr>
+      {% for col in resource.columns %}<th scope="col">{% if col.sort %}{% if sort == col.sort %}{% query_transform tri="-"|add:col.sort page=None as sort_link %}{% else %}{% query_transform tri=col.sort page=None as sort_link %}{% endif %}<a href="{{ sort_link }}" hx-get="{{ sort_link }}" hx-target="#crud-table" hx-push-url="true" class="inline-flex items-center gap-1 hover:text-ink">{{ col.label }}{% if sort == col.sort %}{% icon "arrow-up" "size-3" %}{% elif sort == "-"|add:col.sort %}{% icon "arrow-down" "size-3" %}{% endif %}</a>{% else %}{{ col.label }}{% endif %}</th>{% endfor %}
+      <th scope="col" class="text-right"><span class="sr-only">Actions</span></th>
+    </tr></thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        {% for col in resource.columns %}<td>{% include "dashboard/crud/_cell.html" %}</td>{% endfor %}
+        <td class="whitespace-nowrap text-right">
+          <div class="inline-flex items-center gap-1">
+            {% if resource.publish_field and can_edit %}
+            <form method="post" action="{% url 'dashboard:'|add:resource.slug|add:'_toggle' row.obj.pk %}">{% csrf_token %}
+              <button class="btn btn-ghost btn-sm !px-2.5 {% if row.published %}text-emerald-600{% else %}text-slate-400{% endif %}" title="{% if row.published %}Dépublier{% else %}Publier{% endif %}">{% if row.published %}{% icon "eye" "size-4" label="Publié — cliquer pour dépublier" %}{% else %}{% icon "eye-off" "size-4" label="Non publié — cliquer pour publier" %}{% endif %}</button>
+            </form>
+            {% endif %}
+            {% if row.url %}<a href="{{ row.url }}" class="btn btn-ghost btn-sm !px-2.5" title="Ouvrir">{% if can_edit and not resource.detail_url_name %}{% icon "pencil" "size-4" label="Modifier" %}{% else %}{% icon "arrow-right" "size-4" label="Ouvrir" %}{% endif %}</a>{% endif %}
+            {% if resource.can_delete and can_edit and row.can_delete %}
+            <button type="button" class="btn btn-ghost btn-sm !px-2.5 text-rose-500 hover:!bg-rose-50" title="Supprimer"
+                    @click="$dispatch('confirm', { title: 'Supprimer cet élément ?', text: '« {{ row.obj|escapejs }} » sera définitivement supprimé. Cette action est journalisée.', action: '{% url 'dashboard:'|add:resource.slug|add:'_delete' row.obj.pk %}', label: 'Supprimer' })">{% icon "trash-2" "size-4" label="Supprimer" %}</button>
+            {% endif %}
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<div class="flex items-center justify-between gap-4 px-4 py-3 text-sm text-slate-500">
+  <span>{{ page_obj.paginator.count }} élément{{ page_obj.paginator.count|pluralize }}</span>
+  {% if page_obj.has_other_pages %}
+  <div class="flex items-center gap-2">
+    {% if page_obj.has_previous %}<a class="btn btn-secondary btn-sm" href="{% query_transform page=page_obj.previous_page_number %}">{% icon "chevron-left" "size-4" %}</a>{% endif %}
+    <span>{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}<a class="btn btn-secondary btn-sm" href="{% query_transform page=page_obj.next_page_number %}">{% icon "chevron-right" "size-4" %}</a>{% endif %}
+  </div>
+  {% endif %}
+</div>
+{% else %}
+<div class="px-6 py-16 text-center">
+  <span class="mx-auto grid size-14 place-items-center rounded-2xl bg-surface text-slate-400">{% icon resource.icon "size-6" %}</span>
+  {% if has_filters %}<p class="mt-4 font-semibold text-ink">Aucun résultat</p><p class="mt-1 text-sm text-slate-500">Modifiez la recherche ou les filtres.</p><a href="{{ request.path }}" class="btn btn-secondary btn-sm mt-4">Réinitialiser</a>
+  {% else %}<p class="mt-4 font-semibold text-ink">Aucun élément pour le moment</p>{% if resource.can_create and can_edit %}<a href="{% url 'dashboard:'|add:resource.slug|add:'_create' %}" class="btn btn-primary btn-sm mt-4">{% icon "plus" "size-4" %}Ajouter</a>{% endif %}{% endif %}
+</div>
+{% endif %}

@@ -1,0 +1,6 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Recherche{% endblock %}
+{% block content %}
+{% include "dashboard/includes/page_header.html" with title="Recherche" subtitle=q icon="search" %}
+<div class="max-w-2xl">{% include "dashboard/includes/search_results.html" %}</div>
+{% endblock %}

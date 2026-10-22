@@ -1,0 +1,24 @@
+{% extends "dashboard/base.html" %}
+{% block title %}{{ resource.label_plural }}{% endblock %}
+{% block content %}
+{% include "dashboard/includes/page_header.html" with title=resource.label_plural subtitle=resource.description icon=resource.icon actions="dashboard/crud/_list_actions.html" %}
+<div class="dash-card">
+  <form method="get" class="flex flex-col gap-3 border-b border-line p-4 lg:flex-row lg:items-center" hx-get="{{ request.path }}" hx-target="#crud-table" hx-push-url="true"
+        hx-trigger="input changed delay:350ms from:input[name=q], change from:select">
+    {% if resource.search_fields %}
+    <label class="relative flex-1"><span class="sr-only">Rechercher</span>
+      <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">{% icon "search" "size-4" %}</span>
+      <input type="search" name="q" value="{{ q }}" placeholder="Rechercher…" class="field-input !pl-9">
+    </label>
+    {% endif %}
+    {% for f in filters %}
+    <label class="lg:w-48"><span class="sr-only">{{ f.label }}</span>
+      <select name="{{ f.name }}" class="field-select"><option value="">{{ f.label|capfirst }} : tous</option>{% for value, label in f.choices %}<option value="{{ value }}" {% if f.value == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select>
+    </label>
+    {% endfor %}
+    {% if sort %}<input type="hidden" name="tri" value="{{ sort }}">{% endif %}
+    <noscript><button class="btn btn-secondary">Filtrer</button></noscript>
+  </form>
+  <div id="crud-table">{% include "dashboard/crud/_table.html" %}</div>
+</div>
+{% endblock %}

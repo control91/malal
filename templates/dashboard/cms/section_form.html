@@ -1,0 +1,6 @@
+{% extends "dashboard/crud/form.html" %}
+{% block form_before %}
+{% if object %}<a href="{% url 'dashboard:pages_update' object.page_id %}#sections" class="inline-flex items-center gap-1 text-sm text-primary">{% icon "arrow-left" "size-4" %}Retour à la page « {{ object.page }} »</a>{% endif %}
+<div class="alert alert-info">{% icon "info" "size-4 shrink-0" %}<p>Les sections <strong>Domaines</strong>, <strong>Solutions</strong>, <strong>Actualités</strong>, <strong>Équipe</strong>, <strong>Partenaires</strong>, <strong>Témoignages</strong>, <strong>Réalisations</strong> et <strong>FAQ</strong> se remplissent automatiquement avec les contenus publiés. Les éléments ci-dessous servent aux grilles, à la feuille de route, à la vision et aux points clés du hero.</p></div>
+{% endblock %}
+{% block sidebar_extra %}<div class="mt-5 rounded-xl bg-surface p-3 text-xs text-slate-500">Mettez des mots entre astérisques dans le titre (<code>*Afrique*</code>) pour un effet dégradé.</div>{% endblock %}

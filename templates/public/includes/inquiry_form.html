@@ -1,0 +1,22 @@
+{# Generic inquiry form layout. Params: form, submit_label #}
+<form method="post" novalidate class="space-y-6" x-data="{ sending: false }" @submit="sending = true">
+  {% csrf_token %}
+  {% include "public/includes/antispam_fields.html" %}
+  {% if form.non_field_errors %}<div class="alert alert-error" role="alert">{% icon "triangle-alert" "size-5 shrink-0" %}<div>{% for e in form.non_field_errors %}<p>{{ e }}</p>{% endfor %}</div></div>
+  {% elif form.errors %}<div class="alert alert-error" role="alert">{% icon "triangle-alert" "size-5 shrink-0" %}<p>Merci de corriger les champs signalés ci-dessous.</p></div>{% endif %}
+  <div class="grid gap-5 sm:grid-cols-2">
+    {% for field in form.visible_fields %}{% if field.name != "website" and field.name != "consent" %}
+      {% if field.widget_type == "textarea" or field.name == "kind" or field.name == "subject" or field.name == "product" %}
+        {% include "public/includes/form_field.html" with css="sm:col-span-2" %}
+      {% else %}
+        {% include "public/includes/form_field.html" %}
+      {% endif %}
+    {% endif %}{% endfor %}
+    {% for field in form.hidden_fields %}{% if field.name != "form_ts" %}{{ field }}{% endif %}{% endfor %}
+  </div>
+  {% include "public/includes/form_field.html" with field=form.consent %}
+  <p class="text-xs text-slate-500">Vos données servent uniquement au traitement de votre demande. Consultez notre <a href="/confidentialite/" class="text-primary underline">politique de confidentialité</a>.</p>
+  <button type="submit" class="btn btn-primary btn-lg w-full sm:w-auto" :disabled="sending">
+    <span x-show="!sending">{{ submit_label|default:"Envoyer" }}</span><span x-cloak x-show="sending" class="inline-flex items-center gap-2">{% icon "loader-circle" "size-4 animate-spin" %} Envoi…</span>
+  </button>
+</form>

@@ -1,0 +1,19 @@
+{# Inner page header. Params: eyebrow, title, subtitle, crumbs (list of (label, url)) — or blocks via `with`. #}
+<section class="dark-zone">
+  <div class="grid-pattern absolute inset-0 -z-10"></div>
+  <div class="glow -top-32 right-0 size-[30rem] bg-primary/25"></div>
+  <div class="container-x pb-16 pt-12 sm:pb-20 sm:pt-16">
+    <nav aria-label="Fil d'Ariane" class="text-xs text-slate-400">
+      <ol class="flex flex-wrap items-center gap-1.5">
+        <li><a href="/" class="hover:text-white">Accueil</a></li>
+        {% if parent_label %}<li aria-hidden="true">{% icon "chevron-right" "size-3" %}</li><li><a href="{{ parent_url }}" class="hover:text-white">{{ parent_label }}</a></li>{% endif %}
+        <li aria-hidden="true">{% icon "chevron-right" "size-3" %}</li><li aria-current="page" class="text-slate-300">{{ crumb|default:title|plain|truncatechars:60 }}</li>
+      </ol>
+    </nav>
+    <div class="mt-8 max-w-3xl">
+      {% if eyebrow %}<p class="eyebrow">{{ eyebrow }}</p>{% endif %}
+      <h1 class="mt-4 font-display text-4xl font-bold leading-tight tracking-tight sm:text-5xl">{{ title|emphasis }}</h1>
+      {% if subtitle %}<p class="lead mt-5">{{ subtitle }}</p>{% endif %}
+    </div>
+  </div>
+</section>

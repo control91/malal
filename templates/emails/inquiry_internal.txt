@@ -1,0 +1,17 @@
+{% autoescape off %}Nouvelle demande reçue sur le site {{ site.company_name }}.
+
+Référence : {{ inquiry.reference }}
+Type      : {{ inquiry.get_kind_display }}
+Nom       : {{ inquiry.full_name }}
+Organisation : {{ inquiry.organization|default:"—" }}
+Email     : {{ inquiry.email }}
+Téléphone : {{ inquiry.phone|default:"—" }}
+{% if inquiry.product %}Solution  : {{ inquiry.product }}
+{% endif %}{% if inquiry.category %}Domaine   : {{ inquiry.category }}
+{% endif %}
+Objet : {{ inquiry.subject }}
+
+{{ inquiry.message }}
+
+Traiter la demande : {{ SITE_URL|default:"" }}{{ inquiry.get_dashboard_url }}
+{% endautoescape %}

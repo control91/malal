@@ -1,0 +1,9 @@
+{% load static %}
+<div class="flex items-center gap-2" x-data="{ value: '{{ widget.value.0|default:'' }}' }">
+  <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-primary-50 text-primary ring-1 ring-primary-100">
+    <svg class="size-5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" x-show="value"><use :href="'{% static 'icons/sprite.svg' %}#' + value"></use></svg>
+  </span>
+  <select name="{{ widget.name }}" {% include "django/forms/widgets/attrs.html" %} x-model="value">
+    {% for group_name, group_choices, group_index in widget.optgroups %}{% for option in group_choices %}<option value="{{ option.value|stringformat:'s' }}" {% if option.selected %}selected{% endif %}>{{ option.label }}</option>{% endfor %}{% endfor %}
+  </select>
+</div>

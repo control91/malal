@@ -1,0 +1,11 @@
+{% with value=row.obj|attr:col.attr %}
+{% if col.kind == "title" %}{% if row.url %}<a href="{{ row.url }}" class="font-semibold text-ink hover:text-primary">{{ value|default:"—" }}</a>{% else %}<span class="font-semibold text-ink">{{ value|default:"—" }}</span>{% endif %}
+{% elif col.kind == "bool" %}{% if value %}<span class="inline-flex text-emerald-500">{% icon "circle-check" "size-5" label="Oui" %}</span>{% else %}<span class="inline-flex text-slate-300">{% icon "circle" "size-5" label="Non" %}</span>{% endif %}
+{% elif col.kind == "badge" %}{% if value %}<span class="status-pill bg-slate-50 text-slate-700 ring-slate-200">{{ value }}</span>{% endif %}
+{% elif col.kind == "datetime" %}{% if value %}<span class="whitespace-nowrap text-slate-500" title="{{ value|date:'d/m/Y H:i' }}">{{ value|date:"d/m/Y H:i" }}</span>{% else %}<span class="text-slate-300">—</span>{% endif %}
+{% elif col.kind == "date" %}{% if value %}<span class="whitespace-nowrap text-slate-500">{{ value|date:"d/m/Y" }}</span>{% else %}<span class="text-slate-300">—</span>{% endif %}
+{% elif col.kind == "image" %}{% if value %}{% with name=value.name|lower %}{% if ".pdf" in name or ".docx" in name or ".xlsx" in name or ".zip" in name or ".txt" in name or ".csv" in name or ".pptx" in name %}<span class="grid size-10 place-items-center rounded-lg bg-surface text-slate-400">{% icon "file-text" "size-5" %}</span>{% else %}<img src="{{ value.url }}" alt="" class="size-10 rounded-lg object-cover ring-1 ring-line" loading="lazy">{% endif %}{% endwith %}{% else %}<span class="grid size-10 place-items-center rounded-lg bg-surface text-slate-300">{% icon "image" "size-4" %}</span>{% endif %}
+{% elif col.kind == "money" %}{% if value is not None %}<span class="whitespace-nowrap font-medium">{{ value|money }}</span>{% else %}<span class="text-slate-300">—</span>{% endif %}
+{% elif col.kind == "muted" %}<span class="text-slate-500">{{ value|default:"—" }}</span>
+{% else %}{{ value|default:"—" }}{% endif %}
+{% endwith %}

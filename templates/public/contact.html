@@ -1,0 +1,26 @@
+{% extends "public/base.html" %}
+{% block content %}
+{% include "public/includes/page_header.html" with eyebrow="Contact" title="Parlons de votre *projet*" subtitle="Une question, un besoin Cloud, SaaS ou IA, une idée de partenariat ? Écrivez-nous : un membre de l'équipe vous répondra." %}
+<section class="section-sm">
+  <div class="container-x grid gap-12 lg:grid-cols-12">
+    <div class="lg:col-span-7"><div class="card">{% include "public/includes/inquiry_form.html" with submit_label="Envoyer le message" %}</div></div>
+    <aside class="space-y-5 lg:col-span-5">
+      <div class="card">
+        <h2 class="text-lg font-semibold">Coordonnées</h2>
+        <ul class="mt-5 space-y-4 text-sm">
+          <li class="flex gap-3"><span class="icon-tile size-10 rounded-xl">{% icon "mail" "size-5" %}</span><span><span class="block font-medium text-ink">Email</span><a href="mailto:{{ site.email_contact }}" class="text-primary">{{ site.email_contact }}</a></span></li>
+          {% if site.phone %}<li class="flex gap-3"><span class="icon-tile size-10 rounded-xl">{% icon "phone" "size-5" %}</span><span><span class="block font-medium text-ink">Téléphone</span><a href="tel:{{ site.phone }}">{{ site.phone }}</a></span></li>{% endif %}
+          {% if site.whatsapp %}<li class="flex gap-3"><span class="icon-tile size-10 rounded-xl">{% icon "brand-whatsapp" "size-5" %}</span><span><span class="block font-medium text-ink">WhatsApp</span>{{ site.whatsapp }}</span></li>{% endif %}
+          <li class="flex gap-3"><span class="icon-tile size-10 rounded-xl">{% icon "map-pin" "size-5" %}</span><span><span class="block font-medium text-ink">Adresse</span>{% if site.address %}{{ site.address }}, {% endif %}{{ site.city }}, {{ site.country }}</span></li>
+          {% if site.opening_hours %}<li class="flex gap-3"><span class="icon-tile size-10 rounded-xl">{% icon "clock" "size-5" %}</span><span><span class="block font-medium text-ink">Horaires</span>{{ site.opening_hours }}</span></li>{% endif %}
+        </ul>
+      </div>
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+        <a href="{% url 'crm:quote' %}" class="card card-hover flex items-center gap-4 !p-5"><span class="icon-tile">{% icon "receipt" "size-5" %}</span><span><span class="block font-semibold text-ink">Demander un devis</span><span class="text-sm text-slate-500">Pour un projet précis</span></span></a>
+        <a href="{% url 'crm:demo' %}" class="card card-hover flex items-center gap-4 !p-5"><span class="icon-tile">{% icon "monitor" "size-5" %}</span><span><span class="block font-semibold text-ink">Voir une démo</span><span class="text-sm text-slate-500">Découvrir une solution</span></span></a>
+      </div>
+      {% if site.map_embed_url %}<iframe src="{{ site.map_embed_url }}" title="Carte" class="h-64 w-full rounded-[var(--radius-card)] border border-line" loading="lazy" referrerpolicy="no-referrer"></iframe>{% endif %}
+    </aside>
+  </div>
+</section>
+{% endblock %}

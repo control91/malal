@@ -1,0 +1,87 @@
+{% extends "dashboard/base.html" %}
+{% block title %}{{ inquiry.reference }}{% endblock %}
+{% block content %}
+{% url 'dashboard:demandes_list' as list_url %}
+<div class="mb-8">
+  <a href="{{ list_url }}" class="mb-3 inline-flex items-center gap-1 text-sm text-slate-500 hover:text-primary">{% icon "arrow-left" "size-4" %}Demandes</a>
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div><p class="font-mono text-xs text-slate-400">{{ inquiry.reference }} · reçue le {{ inquiry.created_at|date:"d/m/Y à H:i" }}</p>
+      <h1 class="mt-1 font-display text-2xl font-bold text-ink sm:text-3xl">{{ inquiry.subject }}</h1></div>
+    <div class="flex items-center gap-2"><span class="chip">{{ inquiry.get_kind_display }}</span>{% include "dashboard/crm/_inquiry_status.html" with status=inquiry.status label=inquiry.get_status_display %}</div>
+  </div>
+</div>
+
+<div class="grid gap-6 xl:grid-cols-[1fr_22rem]">
+  <div class="min-w-0 space-y-6">
+    <section class="dash-card">
+      <div class="dash-card-header"><h2 class="dash-card-title">Message</h2></div>
+      <div class="p-5"><p class="whitespace-pre-line break-words text-[0.95rem] leading-relaxed text-slate-700">{{ inquiry.message }}</p>
+        <dl class="mt-6 grid gap-4 border-t border-line pt-5 text-sm sm:grid-cols-3">
+          {% if inquiry.category %}<div><dt class="text-xs text-slate-400">Domaine</dt><dd class="font-medium text-ink">{{ inquiry.category }}</dd></div>{% endif %}
+          {% if inquiry.product %}<div><dt class="text-xs text-slate-400">Solution</dt><dd class="font-medium text-ink">{{ inquiry.product }}</dd></div>{% endif %}
+          {% if inquiry.plan %}<div><dt class="text-xs text-slate-400">Offre</dt><dd class="font-medium text-ink">{{ inquiry.plan }}</dd></div>{% endif %}
+          {% if inquiry.budget %}<div><dt class="text-xs text-slate-400">Budget</dt><dd class="font-medium text-ink">{{ inquiry.get_budget_display }}</dd></div>{% endif %}
+          {% if inquiry.timeline %}<div><dt class="text-xs text-slate-400">Échéance</dt><dd class="font-medium text-ink">{{ inquiry.get_timeline_display }}</dd></div>{% endif %}
+          <div><dt class="text-xs text-slate-400">Consentement</dt><dd class="font-medium text-ink">{% if inquiry.consent %}Oui, le {{ inquiry.consent_at|date:"d/m/Y H:i" }}{% else %}Non{% endif %}</dd></div>
+          <div class="sm:col-span-3"><dt class="text-xs text-slate-400">Page d'origine</dt><dd class="truncate text-slate-600">{{ inquiry.source_url|default:"—" }}</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    {% if can_edit %}
+    <section class="dash-card" x-data="{ tab: 'reply' }">
+      <div class="flex gap-1 border-b border-line bg-surface/60 p-2">
+        <button type="button" class="tab" :class="tab === 'reply' && 'is-active'" @click="tab = 'reply'">{% icon "send" "size-4 inline" %} Répondre par email</button>
+        <button type="button" class="tab" :class="tab === 'note' && 'is-active'" @click="tab = 'note'">{% icon "notebook-pen" "size-4 inline" %} Commentaire interne</button>
+      </div>
+      <form x-show="tab === 'reply'" method="post" action="{% url 'dashboard:inquiry_reply' inquiry.pk %}" class="space-y-4 p-5">{% csrf_token %}
+        <p class="text-xs text-slate-500">Destinataire : <strong class="text-ink">{{ inquiry.email }}</strong> · la réponse est tracée dans l'historique.</p>
+        {% include "dashboard/includes/field.html" with field=reply_form.subject %}{% include "dashboard/includes/field.html" with field=reply_form.message %}{% include "dashboard/includes/field.html" with field=reply_form.mark_answered %}
+        <div class="flex justify-end"><button class="btn btn-primary">{% icon "send" "size-4" %}Envoyer la réponse</button></div>
+      </form>
+      <form x-show="tab === 'note'" x-cloak method="post" action="{% url 'dashboard:inquiry_note' inquiry.pk %}" class="space-y-4 p-5">{% csrf_token %}
+        <div class="grid gap-4 sm:grid-cols-[12rem_1fr]">{% include "dashboard/includes/field.html" with field=note_form.kind %}<div></div></div>
+        {% include "dashboard/includes/field.html" with field=note_form.content %}
+        <div class="flex justify-end"><button class="btn btn-primary">Ajouter</button></div>
+      </form>
+    </section>
+    {% endif %}
+
+    <section class="dash-card" id="timeline">
+      <div class="dash-card-header"><h2 class="dash-card-title">Historique</h2></div>
+      <div class="p-5">{% include "dashboard/crm/_timeline.html" %}</div>
+    </section>
+  </div>
+
+  <aside class="space-y-6">
+    <section class="dash-card p-5">
+      <div class="flex items-center gap-3"><span class="grid size-11 place-items-center rounded-full bg-gradient-to-br from-primary to-accent text-sm font-bold text-white">{{ inquiry.full_name|initials }}</span>
+        <div class="min-w-0"><p class="truncate font-semibold text-ink">{{ inquiry.full_name }}</p><p class="truncate text-xs text-slate-500">{{ inquiry.job_title|default:"" }}{% if inquiry.job_title and inquiry.organization %} · {% endif %}{{ inquiry.organization }}</p></div></div>
+      <ul class="mt-5 space-y-2.5 text-sm">
+        <li class="flex items-center gap-2.5">{% icon "mail" "size-4 text-slate-400" %}<a href="mailto:{{ inquiry.email }}" class="truncate text-primary">{{ inquiry.email }}</a></li>
+        {% if inquiry.phone %}<li class="flex items-center gap-2.5">{% icon "phone" "size-4 text-slate-400" %}<a href="tel:{{ inquiry.phone }}">{{ inquiry.phone }}</a></li>{% endif %}
+        {% if inquiry.country %}<li class="flex items-center gap-2.5">{% icon "map-pin" "size-4 text-slate-400" %}{{ inquiry.country }}</li>{% endif %}
+      </ul>
+      {% if inquiry.lead and can_crm %}<a href="{{ inquiry.lead.get_dashboard_url }}" class="btn btn-secondary btn-sm mt-5 w-full">{% icon "contact" "size-4" %}Fiche prospect · {{ inquiry.lead.get_status_display }}</a>{% endif %}
+    </section>
+
+    <section class="dash-card p-5">
+      <h2 class="dash-card-title">Traitement</h2>
+      <form method="post" action="{% url 'dashboard:inquiry_update' inquiry.pk %}" class="mt-4 space-y-4">{% csrf_token %}
+        {% include "dashboard/includes/field.html" with field=update_form.status %}
+        {% include "dashboard/includes/field.html" with field=update_form.assigned_to %}
+        {% if can_edit %}<button class="btn btn-primary w-full">Mettre à jour</button>{% endif %}
+      </form>
+      {% if inquiry.answered_at %}<p class="mt-4 text-xs text-slate-500">Répondue le {{ inquiry.answered_at|date:"d/m/Y H:i" }}</p>{% endif %}
+    </section>
+
+    {% if audit %}
+    <section class="dash-card p-5">
+      <h2 class="dash-card-title">Journal des opérations</h2>
+      <ul class="mt-4 space-y-3 text-xs">{% for entry in audit %}<li><span class="font-semibold text-ink">{{ entry.get_action_display }}</span> · {{ entry.actor_label|default:"Système" }}<br><span class="text-slate-400">{{ entry.created_at|date:"d/m/Y H:i" }}</span></li>{% endfor %}</ul>
+    </section>
+    {% endif %}
+    <p class="px-1 text-[11px] text-slate-400">IP : {{ inquiry.ip_address|default:"—" }}</p>
+  </aside>
+</div>
+{% endblock %}

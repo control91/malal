@@ -1,0 +1,14 @@
+{% load i18n %}
+<form method="post" action="{% url 'crm:newsletter_subscribe' %}" hx-post="{% url 'crm:newsletter_subscribe' %}" hx-swap="outerHTML" class="mt-4 space-y-3" x-data="{ ts: '' }">
+  {% csrf_token %}
+  {% include "public/includes/antispam_fields.html" %}
+  <label for="nl-email" class="sr-only">{% translate "Adresse email" %}</label>
+  <div class="flex gap-2 rounded-full bg-white/5 p-1 ring-1 ring-white/10 focus-within:ring-accent">
+    <input id="nl-email" name="email" type="email" required autocomplete="email" placeholder="{% translate 'votre@email.com' %}" class="min-w-0 flex-1 border-0 bg-transparent px-4 text-sm text-white placeholder:text-slate-500 focus:ring-0 focus:outline-none">
+    <button class="btn btn-accent btn-sm" type="submit">{% translate "S'inscrire" %}</button>
+  </div>
+  <label class="flex items-start gap-2 text-xs text-slate-400">
+    <input type="checkbox" name="consent" required class="field-checkbox mt-0.5 border-white/20 bg-white/5">
+    <span>{% translate "J'accepte de recevoir la newsletter. Désinscription en un clic." %}</span>
+  </label>
+</form>

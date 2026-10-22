@@ -1,0 +1,10 @@
+.env
+.venv
+node_modules
+media
+staticfiles
+.test-media
+.git
+**/__pycache__
+.pytest_cache
+.ruff_cache

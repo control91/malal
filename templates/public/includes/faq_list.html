@@ -1,0 +1,11 @@
+<div class="divide-y divide-line rounded-[var(--radius-card)] border border-line bg-white">
+  {% for faq in faqs %}
+  <details class="group px-6 py-1 [&_summary::-webkit-details-marker]:hidden" {% if forloop.first and open_first %}open{% endif %}>
+    <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-left font-semibold text-ink">
+      {{ faq.question }}
+      <span class="grid size-8 shrink-0 place-items-center rounded-full bg-surface text-slate-500 transition group-open:rotate-45 group-open:bg-primary group-open:text-white">{% icon "plus" "size-4" %}</span>
+    </summary>
+    <div class="prose-brand pb-6 text-[0.95rem]">{{ faq.answer|safe }}</div>
+  </details>
+  {% endfor %}
+</div>

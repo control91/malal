@@ -1,0 +1,12 @@
+{% extends "public/base.html" %}
+{% block content %}
+<section class="dark-zone min-h-[70vh]">
+  <div class="grid-pattern absolute inset-0 -z-10"></div><div class="glow left-1/2 top-1/4 size-[30rem] -translate-x-1/2 bg-primary/30"></div>
+  <div class="container-x flex min-h-[70vh] flex-col items-center justify-center py-24 text-center">
+    <p class="font-display text-7xl font-extrabold text-gradient sm:text-8xl">{% block code %}{% endblock %}</p>
+    <h1 class="mt-6 font-display text-3xl font-bold sm:text-4xl">{% block heading %}{% endblock %}</h1>
+    <p class="lead mx-auto mt-4 max-w-xl">{% block text %}{% endblock %}</p>
+    <div class="mt-10 flex flex-col gap-3 sm:flex-row"><a href="/" class="btn btn-primary">Retour à l'accueil</a><a href="/contact/" class="btn btn-light">Nous contacter</a></div>
+  </div>
+</section>
+{% endblock %}

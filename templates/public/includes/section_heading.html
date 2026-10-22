@@ -1,0 +1,8 @@
+{# Standard section heading. Params: section, align ("center" default | "left") #}
+{% if section.eyebrow or section.title or section.subtitle %}
+<div class="{% if align == 'left' %}max-w-2xl{% else %}mx-auto max-w-3xl text-center{% endif %}" data-reveal>
+  {% if section.eyebrow %}<p class="eyebrow">{{ section.eyebrow }}</p>{% endif %}
+  {% if section.title %}<h2 class="h-section mt-4">{{ section.title|emphasis }}</h2>{% endif %}
+  {% if section.subtitle %}<p class="lead mt-5">{{ section.subtitle }}</p>{% endif %}
+</div>
+{% endif %}

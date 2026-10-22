@@ -1,0 +1,12 @@
+<p class="mb-6 text-sm text-slate-500">{{ page_obj.paginator.count }} solution{{ page_obj.paginator.count|pluralize }}</p>
+<div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+  {% for product in page_obj %}{% include "public/includes/product_card.html" %}
+  {% empty %}
+  <div class="col-span-full rounded-[var(--radius-card)] border border-dashed border-line p-12 text-center">
+    <span class="mx-auto grid size-12 place-items-center rounded-full bg-surface text-slate-400">{% icon "search" "size-5" %}</span>
+    <p class="mt-4 font-semibold text-ink">Aucune solution ne correspond à votre recherche.</p>
+    <a href="{% url 'products:catalog' %}" class="link-arrow mt-3">Réinitialiser les filtres</a>
+  </div>
+  {% endfor %}
+</div>
+{% include "public/includes/pagination.html" %}

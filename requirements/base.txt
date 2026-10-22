@@ -1,0 +1,23 @@
+# Core
+Django>=5.2.18,<6.0          # LTS (supported until April 2028)
+psycopg[binary]>=3.3,<4
+django-environ>=0.14,<1
+Pillow>=13.0,<14
+nh3>=0.3,<1                  # HTML sanitizer (rich text)
+
+# API
+djangorestframework>=3.18,<4
+drf-spectacular>=0.30,<1
+
+# Async tasks / cache
+celery>=5.6,<6
+redis>=8.1,<9
+
+# Security
+django-axes>=8.3,<9          # login attempt limiting
+django-csp>=4.0,<5           # Content-Security-Policy headers
+
+# Static & storage
+whitenoise>=6.12,<7
+django-storages[s3]>=1.14,<2
+boto3>=1.40,<2

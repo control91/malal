@@ -1,0 +1,123 @@
+{% load static %}<!doctype html>
+<html lang="fr" class="h-full bg-surface">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <title>{% block title %}Tableau de bord{% endblock %} · {{ site.company_name }}</title>
+  <link rel="icon" href="{% if site.favicon %}{{ site.favicon.url }}{% else %}{% static 'img/favicon.svg' %}{% endif %}">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/trix.css' %}">
+  <style>:root{--brand-primary:{{ site.color_primary }};--brand-accent:{{ site.color_accent }};--brand-ink:{{ site.color_ink }}}</style>
+  <script defer src="{% static 'js/dashboard.js' %}" nonce="{{ request.csp_nonce }}"></script>
+  <script defer src="{% static 'vendor/alpine-focus.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+  <script defer src="{% static 'vendor/alpine-collapse.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+  <script defer src="{% static 'vendor/alpine.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+  <script defer src="{% static 'vendor/htmx.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+  <script defer src="{% static 'vendor/trix.umd.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+</head>
+<body class="h-full text-slate-700" x-data="{ nav: false, confirm: { open: false, title: '', text: '', action: '', label: 'Confirmer', danger: true } }"
+      @confirm.window="confirm = Object.assign({ open: true, label: 'Confirmer', danger: true }, $event.detail)">
+  <a href="#contenu" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-white focus:px-4 focus:py-2">Aller au contenu</a>
+
+  {# Sidebar #}
+  <div x-cloak x-show="nav" x-transition.opacity class="fixed inset-0 z-40 bg-ink/60 backdrop-blur-sm lg:hidden" @click="nav = false"></div>
+  <aside :class="nav ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-ink transition-transform duration-300 lg:translate-x-0" aria-label="Navigation du back-office">
+    <div class="flex h-16 shrink-0 items-center justify-between px-5">
+      <a href="{% url 'dashboard:home' %}">{% include "public/includes/logo.html" with dark=True %}</a>
+      <button class="text-slate-400 lg:hidden" @click="nav = false" aria-label="Fermer">{% icon "x" "size-5" %}</button>
+    </div>
+    <nav class="flex-1 space-y-6 overflow-y-auto px-3 pb-6 pt-2">
+      <div><a href="{% url 'dashboard:home' %}" class="dash-link {% if request.resolver_match.url_name == 'home' %}is-active{% endif %}">{% icon "layout-dashboard" "size-[18px]" %}Tableau de bord</a></div>
+      {% for group in dashboard_nav %}
+      <div>
+        <p class="px-3 pb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">{{ group.title }}</p>
+        <ul class="space-y-0.5">
+          {% for item in group.items %}
+          <li><a href="{{ item.url }}" class="dash-link {% if item.active %}is-active{% endif %}" {% if item.active %}aria-current="page"{% endif %}>
+            {% icon item.icon "size-[18px]" %}<span class="flex-1">{{ item.label }}</span>
+            {% if item.label == "Demandes" and new_inquiries %}<span class="rounded-full bg-accent px-1.5 text-[11px] font-bold text-ink">{{ new_inquiries }}</span>{% endif %}
+          </a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+    </nav>
+    <div class="border-t border-white/10 p-3">
+      <a href="/" target="_blank" class="dash-link">{% icon "external-link" "size-[18px]" %}Voir le site</a>
+    </div>
+  </aside>
+
+  <div class="lg:pl-72">
+    {# Top bar #}
+    <header class="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-line bg-white/85 px-4 backdrop-blur-xl sm:px-6">
+      <button class="btn btn-ghost size-10 rounded-full p-0 lg:hidden" @click="nav = true" aria-label="Ouvrir la navigation">{% icon "menu" "size-5" %}</button>
+      <div class="relative max-w-md flex-1" x-data="{ q: '', open: false }" @click.outside="open = false" @keydown.escape="open = false">
+        <form action="{% url 'dashboard:search' %}" method="get" role="search">
+          <label for="global-search" class="sr-only">Recherche globale</label>
+          <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">{% icon "search" "size-4" %}</span>
+          <input id="global-search" name="q" type="search" autocomplete="off" placeholder="Rechercher une demande, un prospect, un article…" class="field-input !rounded-full !bg-surface !pl-9 !shadow-none"
+                 hx-get="{% url 'dashboard:search' %}" hx-trigger="input changed delay:300ms" hx-target="#search-results" @input="open = $event.target.value.length > 1">
+        </form>
+        <div id="search-results" x-show="open" x-cloak class="absolute left-0 right-0 top-12 z-40"></div>
+      </div>
+      <div class="ml-auto flex items-center gap-1.5">
+        <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+          <button class="btn btn-ghost relative size-10 rounded-full p-0" @click="open = !open" hx-get="{% url 'dashboard:notifications_menu' %}" hx-target="#notif-menu" hx-trigger="click once" aria-label="Notifications">
+            {% icon "bell" "size-5" %}{% if unread_notifications %}<span class="absolute right-2 top-2 size-2 rounded-full bg-rose-500 ring-2 ring-white"></span>{% endif %}
+          </button>
+          <div x-show="open" x-cloak x-transition class="absolute right-0 mt-2 w-80 overflow-hidden rounded-2xl border border-line bg-white shadow-[var(--shadow-lift)]">
+            <div class="flex items-center justify-between border-b border-line px-4 py-3"><p class="text-sm font-semibold text-ink">Notifications</p>
+              <form method="post" action="{% url 'dashboard:notifications_read_all' %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.path }}"><button class="text-xs font-medium text-primary">Tout marquer lu</button></form></div>
+            <div id="notif-menu" class="max-h-96 overflow-y-auto"><p class="p-4 text-sm text-slate-400">Chargement…</p></div>
+            <a href="{% url 'dashboard:notifications' %}" class="block border-t border-line px-4 py-2.5 text-center text-xs font-semibold text-primary hover:bg-surface">Toutes les notifications</a>
+          </div>
+        </div>
+        <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+          <button class="flex items-center gap-2.5 rounded-full p-1 pr-2 hover:bg-surface" @click="open = !open" :aria-expanded="open.toString()">
+            {% if user.avatar %}<img src="{{ user.avatar.url }}" alt="" class="size-8 rounded-full object-cover" width="32" height="32">{% else %}<span class="grid size-8 place-items-center rounded-full bg-gradient-to-br from-primary to-accent text-xs font-bold text-white">{{ user.display_name|initials }}</span>{% endif %}
+            <span class="hidden text-left sm:block"><span class="block text-sm font-semibold leading-tight text-ink">{{ user.display_name }}</span><span class="block text-xs text-slate-500">{{ user.get_role_display }}</span></span>
+            {% icon "chevron-down" "size-4 text-slate-400" %}
+          </button>
+          <div x-show="open" x-cloak x-transition class="absolute right-0 mt-2 w-56 rounded-2xl border border-line bg-white p-1.5 shadow-[var(--shadow-lift)]">
+            <a href="{% url 'dashboard:profile' %}" class="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm hover:bg-surface">{% icon "user" "size-4" %}Mon profil</a>
+            <a href="{% url 'dashboard:password_change' %}" class="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm hover:bg-surface">{% icon "key-round" "size-4" %}Mot de passe</a>
+            <form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}<button class="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm text-rose-600 hover:bg-rose-50">{% icon "log-out" "size-4" %}Déconnexion</button></form>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    {# Toasts #}
+    <div class="pointer-events-none fixed right-4 top-20 z-[60] flex w-full max-w-sm flex-col gap-2" aria-live="polite">
+      {% for message in messages %}
+      <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 6000)" x-transition.opacity.duration.300ms
+           class="toast pointer-events-auto flex items-start gap-3 rounded-2xl border bg-white p-4 text-sm shadow-[var(--shadow-lift)] {% if message.tags == 'error' %}border-rose-200{% else %}border-emerald-200{% endif %}" role="status">
+        {% if message.tags == 'error' %}{% icon "circle-alert" "size-5 text-rose-500 shrink-0" %}{% else %}{% icon "circle-check" "size-5 text-emerald-500 shrink-0" %}{% endif %}
+        <p class="flex-1 text-ink">{{ message }}</p>
+        <button @click="show = false" class="text-slate-400 hover:text-ink" aria-label="Fermer">{% icon "x" "size-4" %}</button>
+      </div>
+      {% endfor %}
+    </div>
+
+    <main id="contenu" class="px-4 py-8 sm:px-6 lg:px-10">
+      {% block breadcrumbs %}{% endblock %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  {# Confirmation modal (dispatch `confirm` with {title, text, action}) #}
+  <div x-cloak x-show="confirm.open" class="fixed inset-0 z-[70] grid place-items-center p-4" role="dialog" aria-modal="true" @keydown.escape.window="confirm.open = false">
+    <div x-show="confirm.open" x-transition.opacity class="absolute inset-0 bg-ink/50 backdrop-blur-sm" @click="confirm.open = false"></div>
+    <div x-show="confirm.open" x-transition x-trap="confirm.open" class="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
+      <span :class="confirm.danger ? 'bg-rose-50 text-rose-600' : 'bg-primary-50 text-primary'" class="grid size-12 place-items-center rounded-full">{% icon "triangle-alert" "size-6" %}</span>
+      <h2 class="mt-5 text-lg font-semibold" x-text="confirm.title"></h2>
+      <p class="mt-2 text-sm text-slate-600" x-text="confirm.text"></p>
+      <form method="post" :action="confirm.action" class="mt-6 flex justify-end gap-2">{% csrf_token %}
+        <button type="button" class="btn btn-secondary" @click="confirm.open = false">Annuler</button>
+        <button type="submit" :class="confirm.danger ? 'btn-danger' : 'btn-primary'" class="btn" x-text="confirm.label"></button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

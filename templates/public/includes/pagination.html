@@ -1,0 +1,7 @@
+{% if page_obj.has_other_pages %}
+<nav class="mt-12 flex items-center justify-center gap-2" aria-label="Pagination">
+  {% if page_obj.has_previous %}<a href="{% query_transform page=page_obj.previous_page_number %}" class="btn btn-secondary btn-sm" rel="prev">{% icon "chevron-left" "size-4" %} Précédent</a>{% endif %}
+  <span class="px-3 text-sm text-slate-500">Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}</span>
+  {% if page_obj.has_next %}<a href="{% query_transform page=page_obj.next_page_number %}" class="btn btn-secondary btn-sm" rel="next">Suivant {% icon "chevron-right" "size-4" %}</a>{% endif %}
+</nav>
+{% endif %}

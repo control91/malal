@@ -1,0 +1,63 @@
+{% extends "public/base.html" %}
+{% block content %}
+{% include "public/includes/page_header.html" with eyebrow="Tarifs" title="Des offres *transparentes*" subtitle="Des formules claires pour démarrer, et des devis sur mesure pour les projets spécifiques. Les prix affichés sont indicatifs et confirmés dans votre proposition commerciale." %}
+<section class="section-sm" x-data="{ billing: 'monthly' }">
+  <div class="container-x">
+    {% if tables %}
+    <div class="flex justify-center">
+      <div class="inline-flex rounded-full bg-surface p-1 ring-1 ring-line" role="radiogroup" aria-label="Période de facturation">
+        <button type="button" role="radio" :aria-checked="(billing === 'monthly').toString()" @click="billing = 'monthly'" :class="billing === 'monthly' ? 'bg-white text-ink shadow-sm' : 'text-slate-500'" class="rounded-full px-5 py-2 text-sm font-semibold transition">Mensuel</button>
+        <button type="button" role="radio" :aria-checked="(billing === 'yearly').toString()" @click="billing = 'yearly'" :class="billing === 'yearly' ? 'bg-white text-ink shadow-sm' : 'text-slate-500'" class="rounded-full px-5 py-2 text-sm font-semibold transition">Annuel</button>
+      </div>
+    </div>
+    {% endif %}
+
+    {% for table in tables %}
+    <div class="mt-16 first:mt-12">
+      <div class="flex flex-col justify-between gap-3 md:flex-row md:items-end" data-reveal>
+        <div><h2 class="font-display text-2xl font-bold sm:text-3xl">{{ table.group.name }}</h2>{% if table.group.description %}<p class="mt-2 max-w-2xl text-slate-600">{{ table.group.description }}</p>{% endif %}</div>
+        {% if table.group.category %}<a href="{{ table.group.category.get_absolute_url }}" class="link-arrow">Découvrir {{ table.group.category.name }} {% icon "arrow-right" "size-4" %}</a>{% endif %}
+      </div>
+      <div class="mt-8 grid gap-5 md:grid-cols-2 {% if table.plans|length >= 3 %}lg:grid-cols-3{% endif %} {% if table.plans|length >= 4 %}xl:grid-cols-4{% endif %}">
+        {% for plan in table.plans %}{% include "public/includes/plan_card.html" %}{% endfor %}
+      </div>
+
+      {% if table.rows and table.plans|length > 1 %}
+      <details class="group mt-6 rounded-[var(--radius-card)] border border-line bg-white">
+        <summary class="flex cursor-pointer list-none items-center justify-between px-6 py-4 text-sm font-semibold text-ink [&::-webkit-details-marker]:hidden">Comparer les offres en détail <span class="transition group-open:rotate-180">{% icon "chevron-down" "size-4" %}</span></summary>
+        <div class="table-wrap border-t border-line">
+          <table class="table">
+            <thead><tr><th scope="col">Caractéristique</th>{% for plan in table.plans %}<th scope="col" class="text-center">{{ plan.name }}</th>{% endfor %}</tr></thead>
+            <tbody>
+              {% for label, cells in table.rows %}
+              <tr><th scope="row" class="px-4 py-3 text-left font-medium text-slate-700">{{ label }}</th>
+                {% for cell in cells %}<td class="text-center">{% if cell and cell.included %}{% if cell.value %}<span class="font-semibold text-ink">{{ cell.value }}</span>{% else %}<span class="inline-flex text-emerald-500">{% icon "check" "size-5" label="Inclus" %}</span>{% endif %}{% else %}<span class="inline-flex text-slate-300">{% icon "minus" "size-5" label="Non inclus" %}</span>{% endif %}</td>{% endfor %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </details>
+      {% endif %}
+
+      {% if table.group.options.all %}
+      <div class="mt-6 rounded-[var(--radius-card)] bg-surface p-6">
+        <h3 class="text-sm font-semibold text-ink">Options</h3>
+        <ul class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {% for option in table.group.options.all %}<li class="flex items-start justify-between gap-4 rounded-xl bg-white p-4 text-sm ring-1 ring-line"><span><span class="block font-medium text-ink">{{ option.name }}</span>{% if option.description %}<span class="text-slate-500">{{ option.description }}</span>{% endif %}</span><span class="shrink-0 font-semibold text-ink">{{ option.price_label|default:"Sur devis" }}</span></li>{% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+    {% empty %}
+    <div class="mx-auto max-w-xl rounded-[var(--radius-card)] border border-dashed border-line p-12 text-center">
+      <h2 class="font-display text-2xl font-bold">Tarifs sur devis</h2><p class="mt-3 text-slate-600">Nos grilles tarifaires publiques arrivent prochainement. En attendant, nous établissons une proposition personnalisée.</p>
+      <a href="{% url 'crm:quote' %}" class="btn btn-primary mt-6">Demander un devis</a>
+    </div>
+    {% endfor %}
+
+    {% if site.hosting_disclosure and tables %}<p class="mx-auto mt-14 flex max-w-3xl items-start gap-2 text-sm text-slate-500">{% icon "info" "size-4 mt-0.5 shrink-0" %}{{ site.hosting_disclosure }}</p>{% endif %}
+  </div>
+</section>
+{% include "public/includes/cta_band.html" with cta_title="Besoin d'une offre sur mesure ?" cta_text="Volumes importants, contraintes réglementaires, intégration spécifique : nous construisons une proposition adaptée." %}
+{% endblock %}

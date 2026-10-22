@@ -1,0 +1,14 @@
+{% extends "public/base.html" %}
+{% block content %}
+  {% include "public/includes/page_header.html" with eyebrow=page.eyebrow title=page.title subtitle=page.intro %}
+  <section class="section-sm">
+    <div class="container-x grid gap-12 lg:grid-cols-12">
+      <aside class="lg:col-span-3"><div class="sticky top-28 rounded-2xl bg-surface p-5 text-sm text-slate-600">
+        <p class="font-semibold text-ink">Dernière mise à jour</p><p class="mt-1">{{ page.updated_at|date:"j F Y" }}</p>
+        <p class="mt-4 font-semibold text-ink">Une question ?</p><a href="mailto:{{ site.email_contact }}" class="mt-1 block text-primary">{{ site.email_contact }}</a>
+      </div></aside>
+      <article class="prose-brand lg:col-span-9 lg:max-w-3xl">{{ page.body|safe }}</article>
+    </div>
+  </section>
+  {% for section in sections %}{% include section.template_name %}{% endfor %}
+{% endblock %}
