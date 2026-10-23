@@ -72,7 +72,7 @@ class SiteSettings(TimeStampedModel):
     tax_number = models.CharField(_("NIF"), max_length=80, blank=True)
 
     # Brand colours (injected as CSS custom properties)
-    color_primary = models.CharField(_("couleur principale"), max_length=7, default="#2563EB", validators=[validate_hex_color])
+    color_primary = models.CharField(_("couleur principale"), max_length=7, default="#1167B1", validators=[validate_hex_color])
     color_accent = models.CharField(_("couleur d'accent"), max_length=7, default="#22D3EE", validators=[validate_hex_color])
     color_ink = models.CharField(_("bleu nuit"), max_length=7, default="#0A1330", validators=[validate_hex_color])
 

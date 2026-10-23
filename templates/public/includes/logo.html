@@ -1,9 +1,10 @@
-{# Brand logo: uploaded file if any, otherwise the built-in mark + company name. `dark` = on a dark background. #}
+{# Brand logo: uploaded file if any, otherwise the built-in MALAL mark + company name. `dark` = on a dark background. #}
+{% load static %}
 {% if dark and site.logo_dark %}<img src="{{ site.logo_dark.url }}" alt="{{ site.company_name }}" class="h-8 w-auto" width="140" height="32">
 {% elif not dark and site.logo %}<img src="{{ site.logo.url }}" alt="{{ site.company_name }}" class="h-8 w-auto" width="140" height="32">
 {% else %}
-<span class="inline-flex items-center gap-2.5">
-  <svg viewBox="0 0 64 64" class="size-8 shrink-0" aria-hidden="true"><defs><linearGradient id="lg-{{ dark|yesno:'d,l' }}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--brand-primary)"/><stop offset="1" stop-color="var(--brand-accent)"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="{% if dark %}rgba(255,255,255,.08){% else %}var(--brand-ink){% endif %}"/><path d="M18 44 32 20l14 24" fill="none" stroke="url(#lg-{{ dark|yesno:'d,l' }})" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="20" r="5.5" fill="var(--brand-accent)"/><circle cx="18" cy="44" r="5.5" fill="var(--brand-primary)"/><circle cx="46" cy="44" r="5.5" fill="#fff"/></svg>
-  <span class="font-display text-lg font-extrabold tracking-tight {% if dark %}text-white{% else %}text-ink{% endif %}">{{ site.company_name }}</span>
+<span class="inline-flex items-center gap-3">
+  <img src="{% static 'img/logo-mark.svg' %}" alt="" class="h-7 w-auto shrink-0" width="50" height="28">
+  <span class="font-display text-xl font-extrabold tracking-tight {% if dark %}text-white{% else %}text-ink{% endif %}">{{ site.company_name }}</span>
 </span>
 {% endif %}
