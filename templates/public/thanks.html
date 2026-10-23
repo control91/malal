@@ -2,9 +2,9 @@
 {% block content %}
 <section class="section">
   <div class="container-x max-w-2xl text-center">
-    <span class="mx-auto grid size-16 place-items-center rounded-full bg-emerald-50 text-emerald-600 ring-8 ring-emerald-50/50">{% icon "circle-check" "size-8" %}</span>
+    <span class="mx-auto grid size-16 place-items-center rounded-full bg-emerald-400/10 text-emerald-600 ring-8 ring-emerald-400/5">{% icon "circle-check" "size-8" %}</span>
     <h1 class="mt-8 font-display text-4xl font-bold">Merci, votre demande est bien reçue.</h1>
-    <p class="lead mt-5">Votre référence : <strong class="font-mono text-ink">{{ reference }}</strong>. {% if site.send_acknowledgement %}Un email de confirmation vient de vous être envoyé.{% endif %} Un membre de notre équipe reviendra vers vous rapidement.</p>
+    <p class="lead mt-5">Votre référence : <strong class="font-mono text-white">{{ reference }}</strong>. {% if site.send_acknowledgement %}Un email de confirmation vient de vous être envoyé.{% endif %} Un membre de notre équipe reviendra vers vous rapidement.</p>
     <div class="mt-10 flex flex-col justify-center gap-3 sm:flex-row"><a href="/" class="btn btn-primary">Retour à l'accueil</a><a href="{% url 'blog:list' %}" class="btn btn-secondary">Lire nos ressources</a></div>
   </div>
 </section>

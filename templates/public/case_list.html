@@ -6,12 +6,12 @@
     {% if sectors|length > 1 %}<nav class="flex flex-wrap gap-1" aria-label="Secteurs"><a href="?" class="tab {% if not current_sector %}is-active{% endif %}">Tous les secteurs</a>{% for s in sectors %}<a href="?secteur={{ s|urlencode }}" class="tab {% if current_sector == s %}is-active{% endif %}">{{ s }}</a>{% endfor %}</nav>{% endif %}
     <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {% for case in cases %}{% include "public/includes/case_card.html" %}
-      {% empty %}<div class="col-span-full rounded-[var(--radius-card)] border border-dashed border-line p-12 text-center"><p class="font-semibold text-ink">Nos premières études de cas seront publiées prochainement.</p><p class="mt-2 text-sm text-slate-500">Nous ne publions un projet qu'avec l'accord explicite du client.</p></div>{% endfor %}
+      {% empty %}<div class="col-span-full rounded-[var(--radius-card)] border border-dashed border-white/10 p-12 text-center"><p class="font-semibold text-white">Nos premières études de cas seront publiées prochainement.</p><p class="mt-2 text-sm text-slate-500">Nous ne publions un projet qu'avec l'accord explicite du client.</p></div>{% endfor %}
     </div>
   </div>
 </section>
 {% if testimonials %}
-<section class="section-sm muted-zone"><div class="container-x"><h2 class="font-display text-2xl font-bold">Ils témoignent</h2><div class="mt-8 grid gap-6 md:grid-cols-3">{% for t in testimonials %}<figure class="card"><blockquote class="text-slate-700">« {{ t.quote }} »</blockquote><figcaption class="mt-4 text-sm font-semibold text-ink">{{ t.author_name }}<span class="block font-normal text-slate-500">{{ t.author_role }}{% if t.organization %} · {{ t.organization }}{% endif %}</span></figcaption></figure>{% endfor %}</div></div></section>
+<section class="section-sm muted-zone"><div class="container-x"><h2 class="font-display text-2xl font-bold">Ils témoignent</h2><div class="mt-8 grid gap-6 md:grid-cols-3">{% for t in testimonials %}<figure class="card"><blockquote class="text-slate-300">« {{ t.quote }} »</blockquote><figcaption class="mt-4 text-sm font-semibold text-white">{{ t.author_name }}<span class="block font-normal text-slate-500">{{ t.author_role }}{% if t.organization %} · {{ t.organization }}{% endif %}</span></figcaption></figure>{% endfor %}</div></div></section>
 {% endif %}
 {% include "public/includes/cta_band.html" %}
 {% endblock %}

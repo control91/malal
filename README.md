@@ -12,7 +12,7 @@ mini-CRM et back-office sur mesure, pour une entreprise technologique basée à 
 | --- | --- |
 | Backend | Python 3.12+, Django 5.2 LTS, PostgreSQL 17, Django REST Framework (API publique en lecture seule) |
 | Tâches asynchrones | Celery + Redis (emails) — exécution synchrone automatique si Redis est absent |
-| Frontend | Templates Django, Tailwind CSS v4, Alpine.js, htmx, icônes Lucide (inline), polices Inter & Manrope auto-hébergées |
+| Frontend | Templates Django, Tailwind CSS v4, Alpine.js, htmx, icônes Lucide (inline), polices auto-hébergées : Jost & Russo One (site public, thème sombre), Inter & Manrope (back-office) |
 | Sécurité | django-axes (limitation des connexions), django-csp, anti-spam maison, nh3 (assainissement HTML) |
 | Livraison | Docker multi-stage, Gunicorn, WhiteNoise, Nginx, Docker Compose |
 

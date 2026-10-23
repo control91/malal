@@ -2,7 +2,7 @@
 {% with widget_type=field.widget_type %}
 <div class="{% if field.errors %}has-error{% endif %} {{ css }}">
   {% if widget_type == "checkbox" %}
-    <label class="flex items-start gap-3 text-sm text-slate-600">
+    <label class="field-check-label">
       <input type="checkbox" name="{{ field.html_name }}" id="{{ field.id_for_label }}" class="field-checkbox mt-0.5" {% if field.value %}checked{% endif %} {% if field.field.required %}required{% endif %} {% if field.errors %}aria-invalid="true" aria-describedby="{{ field.id_for_label }}-error"{% endif %}>
       <span>{{ field.label }}{% if field.field.required %} <span class="text-rose-500" aria-hidden="true">*</span>{% endif %}</span>
     </label>

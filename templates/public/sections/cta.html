@@ -1,15 +1,15 @@
-<section class="section-sm {% if section.theme == 'muted' %}muted-zone{% endif %}" {% if section.anchor %}id="{{ section.anchor }}"{% endif %}>
-  <div class="container-x">
-    <div class="dark-zone rounded-[2rem] px-6 py-14 text-center sm:px-12 sm:py-20" data-reveal>
-      <div class="grid-pattern absolute inset-0 -z-10"></div>
-      <div class="glow left-1/2 top-0 size-[30rem] -translate-x-1/2 bg-primary/40"></div>
-      {% if section.eyebrow %}<p class="eyebrow justify-center">{{ section.eyebrow }}</p>{% endif %}
-      <h2 class="h-section mx-auto mt-4 max-w-3xl">{{ section.title|emphasis }}</h2>
-      {% if section.subtitle %}<p class="lead mx-auto mt-5 max-w-2xl">{{ section.subtitle }}</p>{% endif %}
-      <div class="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-        {% if section.cta_label %}<a href="{{ section.cta_url }}" class="btn btn-accent btn-lg">{{ section.cta_label }} {% icon "arrow-right" "size-4" %}</a>{% endif %}
-        {% if section.cta2_label %}<a href="{{ section.cta2_url }}" class="btn btn-light btn-lg">{{ section.cta2_label }}</a>{% endif %}
-      </div>
+<section class="relative isolate overflow-hidden border-t border-white/10 py-24 sm:py-32" {% if section.anchor %}id="{{ section.anchor }}"{% endif %}>
+  <div class="grid-pattern absolute inset-0 -z-10 opacity-50"></div>
+  <div class="glow left-1/2 top-1/2 size-[36rem] -translate-x-1/2 -translate-y-1/2 bg-primary/25"></div>
+  <div class="container-x grid items-center gap-12 lg:grid-cols-12" data-reveal>
+    <div class="lg:col-span-8">
+      {% if section.eyebrow %}<p class="eyebrow">{{ section.eyebrow }}</p>{% endif %}
+      <h2 class="h-section mt-5">{{ section.title|emphasis }}</h2>
+      {% if section.subtitle %}<p class="lead mt-6 max-w-2xl">{{ section.subtitle }}</p>{% endif %}
+      {% if section.cta2_label %}<a href="{{ section.cta2_url }}" class="btn btn-secondary mt-9">{{ section.cta2_label }} {% icon "arrow-up-right" "size-4" %}</a>{% endif %}
+    </div>
+    <div class="flex lg:col-span-4 lg:justify-end">
+      {% if section.cta_label %}<a href="{{ section.cta_url }}" class="btn-circle group !size-44 bg-primary text-base before:!border-primary-300/60 hover:bg-primary-600 sm:!size-52"><span class="flex flex-col items-center gap-2 px-6">{{ section.cta_label }}{% icon "arrow-up-right" "size-6 transition group-hover:rotate-45" %}</span></a>{% endif %}
     </div>
   </div>
 </section>

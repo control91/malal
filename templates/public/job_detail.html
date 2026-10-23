@@ -5,9 +5,9 @@
   <div class="container-x grid max-w-5xl gap-12 lg:grid-cols-12">
     <div class="prose-brand lg:col-span-8">{{ job.description|safe }}</div>
     <aside class="lg:col-span-4"><div class="card sticky top-28 space-y-4 text-sm">
-      <p class="flex items-center gap-2">{% icon "map-pin" "size-4 text-primary" %}{{ job.location }}{% if job.remote_possible %} · télétravail possible{% endif %}</p>
-      <p class="flex items-center gap-2">{% icon "briefcase" "size-4 text-primary" %}{{ job.get_contract_display }}</p>
-      {% if job.closes_on %}<p class="flex items-center gap-2">{% icon "calendar" "size-4 text-primary" %}Candidatures jusqu'au {{ job.closes_on|date:"j F Y" }}</p>{% endif %}
+      <p class="flex items-center gap-2">{% icon "map-pin" "size-4 text-primary-400" %}{{ job.location }}{% if job.remote_possible %} · télétravail possible{% endif %}</p>
+      <p class="flex items-center gap-2">{% icon "briefcase" "size-4 text-primary-400" %}{{ job.get_contract_display }}</p>
+      {% if job.closes_on %}<p class="flex items-center gap-2">{% icon "calendar" "size-4 text-primary-400" %}Candidatures jusqu'au {{ job.closes_on|date:"j F Y" }}</p>{% endif %}
       <a href="{% url 'crm:contact' %}?type=career" class="btn btn-primary w-full">Postuler</a>
       <p class="text-xs text-slate-500">Précisez l'intitulé « {{ job.title }} » dans l'objet et joignez un lien vers votre CV (LinkedIn, portfolio…).</p>
     </div></aside>

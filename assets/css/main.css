@@ -44,15 +44,55 @@
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
+@font-face {
+  font-family: "Jost Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("../fonts/jost-latin-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Jost Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("../fonts/jost-latin-ext-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Russo One";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("../fonts/russo-one-latin-400-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Russo One";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("../fonts/russo-one-latin-ext-400-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 :root {
   --brand-primary: #2563eb;
   --brand-accent: #22d3ee;
   --brand-ink: #0a1330;
 }
 
-@theme inline {
+@theme {
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-display: "Manrope Variable", "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+}
+
+@theme inline {
+  /* Public site surfaces (deep, almost black, tinted by the brand ink colour) */
+  --color-night: color-mix(in oklab, var(--brand-ink) 42%, black);
+  --color-night-800: color-mix(in oklab, var(--brand-ink) 62%, black);
+  --color-night-700: color-mix(in oklab, var(--brand-ink) 85%, black);
 
   --color-primary: var(--brand-primary);
   --color-primary-50: color-mix(in oklab, var(--brand-primary) 7%, white);
@@ -94,6 +134,8 @@
 @keyframes pulse-ring { 0% { transform: scale(1); opacity: .7; } 100% { transform: scale(3.4); opacity: 0; } }
 @keyframes dash { to { stroke-dashoffset: -40; } }
 @keyframes fade-up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes marquee { to { transform: translateX(-50%); } }
+@keyframes spin-slow { to { transform: rotate(360deg); } }
 @keyframes toast-in { from { opacity: 0; transform: translateY(-8px) scale(.98); } to { opacity: 1; transform: none; } }
 
 /* ------------------------------------------------------------------------ */
@@ -184,6 +226,7 @@
   .field-file { @apply block w-full text-sm text-slate-600 file:mr-3 file:rounded-full file:border-0 file:bg-primary-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-primary hover:file:bg-primary-100; }
   .field-checks ul, ul.field-checks { @apply grid gap-2 sm:grid-cols-2; }
   .field-checks label { @apply flex items-center gap-2 text-sm; }
+  .field-check-label { @apply flex items-start gap-3 text-sm text-slate-600; }
   .field-help { @apply mt-1.5 text-xs text-slate-500; }
   .field-error { @apply mt-1.5 flex items-center gap-1 text-xs font-medium text-rose-600; }
   .has-error .field-input, .has-error .field-select { @apply ring-rose-400 focus:ring-rose-500; }
@@ -203,7 +246,7 @@
 
   /* Africa map */
   .africa-map { @apply h-auto w-full; }
-  .africa-map circle.af, .africa-map circle.wa, .africa-map circle.gn { fill: rgb(148 163 184 / .22); transition: fill .6s ease, opacity .6s ease; }
+  .africa-map circle.af, .africa-map circle.wa, .africa-map circle.gn { fill: rgb(148 163 184 / .32); transition: fill .6s ease, opacity .6s ease; }
   .africa-map[data-phase="1"] circle.gn,
   .africa-map[data-phase="2"] circle.gn, .africa-map[data-phase="3"] circle.gn { fill: var(--brand-accent); }
   .africa-map[data-phase="2"] circle.wa, .africa-map[data-phase="3"] circle.wa { fill: color-mix(in oklab, var(--brand-primary) 80%, white); }
@@ -243,7 +286,97 @@
   trix-toolbar .trix-button-group--file-tools { display: none !important; }
 }
 
+/* ------------------------------------------------------------------------ */
+/* Public site — dark theme (body.site). The back-office keeps the light UI. */
+/* ------------------------------------------------------------------------ */
+@layer components {
+  .site {
+    --font-sans: "Jost Variable", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Russo One", "Jost Variable", ui-sans-serif, sans-serif;
+    --radius-card: 0.9rem;
+    --shadow-card: none;
+    --shadow-lift: 0 30px 60px -30px rgb(0 0 0 / .8);
+    @apply bg-night text-[1.0625rem] text-slate-400;
+    font-synthesis: none;
+  }
+  .site h1, .site h2, .site h3, .site h4 { @apply text-white; letter-spacing: 0; font-weight: 400; }
+  .site .h-display { @apply text-[2.6rem] leading-[1.08] sm:text-6xl lg:text-[4.4rem]; letter-spacing: 0; }
+  .site .h-section { @apply text-[2rem] leading-[1.15] sm:text-[2.6rem] lg:text-[3.1rem]; letter-spacing: 0; }
+  .site .lead { @apply text-slate-400; }
+  .site .font-bold, .site .font-semibold { font-weight: 500; }
+  .site :is(h1, h2, h3, h4).font-bold, .site :is(h1, h2, h3, h4).font-semibold, .site .font-display { font-weight: 400; }
+  .site ::selection { background: var(--brand-primary); color: white; }
+
+  .site .eyebrow { @apply gap-2.5 text-[0.8rem] font-medium tracking-[0.18em] text-primary-400; }
+  .site .eyebrow::before { content: ""; @apply size-3.5 bg-current opacity-100; height: .875rem; width: .875rem;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z'/%3E%3C/svg%3E") center/contain no-repeat; }
+
+  .site .dark-zone { @apply border-b border-white/10 bg-night; }
+  .site .muted-zone { @apply bg-night-800/60; }
+  .site .glow { @apply opacity-70; }
+
+  .site .btn { @apply rounded-lg; }
+  .site .btn-primary { @apply shadow-none; }
+  .site .btn-secondary { @apply bg-transparent text-white ring-white/25 hover:bg-white hover:text-night; }
+  .site .btn-ghost { @apply text-white hover:bg-white/10; }
+  .site .link-arrow { @apply text-primary-400 hover:text-white; }
+
+  /* Circular call-to-action with a rotating dashed ring */
+  .btn-circle { @apply relative inline-grid size-36 shrink-0 place-items-center rounded-full text-center text-sm font-medium text-white transition duration-300 hover:bg-primary hover:text-white sm:size-40; }
+  .btn-circle::before { content: ""; @apply absolute inset-0 rounded-full border border-dashed border-white/35 transition; animation: spin-slow 18s linear infinite; }
+  .btn-circle:hover::before { border-color: transparent; }
+
+  .site .card { @apply border-white/10 bg-white/[0.025]; }
+  .site .card-hover { @apply hover:-translate-y-1 hover:border-primary/60 hover:bg-white/[0.045]; }
+  .site .icon-tile { @apply rounded-xl bg-primary/10 text-primary-400 ring-primary/25; }
+  .site .chip { @apply bg-white/5 text-slate-300; }
+  .site .tab { @apply text-slate-400 hover:text-white; }
+  .site .tab.is-active { @apply bg-white/10 text-white shadow-none ring-white/10; }
+
+  .site .badge-available { @apply bg-emerald-400/10 text-emerald-300 ring-emerald-400/25; }
+  .site .badge-beta { @apply bg-amber-400/10 text-amber-300 ring-amber-400/25; }
+  .site .badge-coming_soon { @apply bg-white/5 text-slate-300 ring-white/15; }
+  .site .badge-example { @apply bg-violet-400/10 text-violet-300 ring-violet-400/25; }
+
+  .site .nav-link { @apply text-slate-300 hover:text-white; }
+  .site .nav-link.is-active { @apply text-primary-400; }
+  .site .nav-link.is-active::after { @apply bg-primary-400; }
+
+  .site .field-label { @apply text-slate-200; }
+  .site .field-input, .site .field-select { @apply rounded-lg bg-white/[0.04] text-white ring-white/15 placeholder:text-slate-500 focus:ring-primary-400; color-scheme: dark; }
+  .site .field-select option { @apply bg-night-800 text-white; }
+  .site .field-checkbox { @apply border-white/25 bg-white/5; }
+  .site .field-help { @apply text-slate-500; }
+  .site .field-check-label { @apply text-slate-400; }
+  .site .field-error { @apply text-rose-400; }
+  .site .alert-error { @apply bg-rose-500/10 text-rose-200 ring-rose-400/30; }
+  .site .alert-success { @apply bg-emerald-500/10 text-emerald-200 ring-emerald-400/30; }
+  .site .alert-info { @apply bg-primary/10 text-primary-200 ring-primary/30; }
+  .site .alert-warning { @apply bg-amber-500/10 text-amber-200 ring-amber-400/30; }
+
+  .site .prose-brand { @apply prose-invert prose-headings:font-normal prose-a:text-primary-400 prose-strong:text-white prose-p:text-slate-400 prose-li:text-slate-400; }
+  .site .table thead th { @apply border-white/10 bg-white/[0.03] text-slate-400; }
+  .site .table tbody td { @apply border-white/10 text-slate-300; }
+  .site .table tbody tr { @apply hover:bg-white/[0.03]; }
+
+  /* Hairline rows (domains, case studies…) */
+  .row-link { @apply relative grid items-center gap-4 border-t border-white/10 py-7 transition duration-300 sm:grid-cols-[4rem_1fr_1.2fr_auto] sm:gap-8 sm:py-9; }
+  .row-link:last-child { @apply border-b; }
+  .row-link::before { content: ""; @apply pointer-events-none absolute inset-y-0 -inset-x-4 -z-10 rounded-xl bg-white/[0.03] opacity-0 transition sm:-inset-x-6; }
+  .row-link:hover::before { @apply opacity-100; }
+  .row-arrow { @apply grid size-12 place-items-center rounded-full border border-white/20 text-white transition duration-300 group-hover:-rotate-45 group-hover:border-primary group-hover:bg-primary; }
+
+  /* Marquee strip */
+  .marquee { @apply flex w-max gap-12 whitespace-nowrap; animation: marquee 38s linear infinite; }
+  .marquee:hover { animation-play-state: paused; }
+  .text-outline { color: transparent; -webkit-text-stroke: 1px rgb(255 255 255 / .35); }
+
+  /* Back-to-top with scroll progress */
+  .to-top { @apply fixed bottom-6 right-6 z-40 grid size-12 place-items-center rounded-full bg-night-800 text-white shadow-lg ring-1 ring-white/10 transition hover:bg-primary; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .marquee { animation: none; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }

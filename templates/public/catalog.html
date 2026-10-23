@@ -3,11 +3,11 @@
 {% include "public/includes/page_header.html" with eyebrow="Catalogue" title="Nos *solutions*" subtitle="Logiciels SaaS, services Cloud et solutions d'IA conçus pour les organisations africaines. Chaque fiche indique clairement sa disponibilité." %}
 <section class="section-sm">
   <div class="container-x">
-    <form method="get" action="{% url 'products:catalog' %}" class="flex flex-col gap-3 rounded-2xl border border-line bg-white p-3 shadow-[var(--shadow-card)] md:flex-row md:items-center"
+    <form method="get" action="{% url 'products:catalog' %}" class="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3 shadow-[var(--shadow-card)] md:flex-row md:items-center"
           hx-get="{% url 'products:catalog' %}" hx-target="#catalog-results" hx-push-url="true" hx-trigger="input changed delay:350ms from:input[name=q], change from:select, submit" role="search">
       <label class="relative flex-1"><span class="sr-only">Rechercher</span>
         <span class="pointer-events-none absolute inset-y-0 left-3.5 flex items-center text-slate-400">{% icon "search" "size-4" %}</span>
-        <input type="search" name="q" value="{{ filters.q }}" placeholder="Rechercher une solution, une fonctionnalité…" class="field-input !rounded-xl !pl-10 !shadow-none !ring-0 bg-surface">
+        <input type="search" name="q" value="{{ filters.q }}" placeholder="Rechercher une solution, une fonctionnalité…" class="field-input !rounded-xl !pl-10 !shadow-none !ring-0 bg-white/5">
       </label>
       <label class="md:w-56"><span class="sr-only">Domaine</span>
         <select name="domaine" class="field-select !shadow-none"><option value="">Tous les domaines</option>{% for c in categories %}<option value="{{ c.slug }}" {% if filters.domaine == c.slug %}selected{% endif %}>{{ c.name }}</option>{% endfor %}</select>

@@ -55,6 +55,7 @@ class PageSection(OrderedModel, TimeStampedModel):
 
     class Kind(models.TextChoices):
         HERO = "hero", _("Hero (bandeau principal)")
+        MARQUEE = "marquee", _("Bandeau défilant (domaines)")
         DOMAINS = "domains", _("Domaines d'expertise (catégories)")
         SOLUTIONS = "solutions", _("Solutions mises en avant")
         FEATURES = "features", _("Grille d'éléments (icône + texte)")

@@ -1,33 +1,36 @@
-<section class="dark-zone {% if section.anchor %}scroll-mt-20{% endif %}" {% if section.anchor %}id="{{ section.anchor }}"{% endif %} aria-labelledby="hero-title-{{ section.pk }}">
-  <div class="grid-pattern absolute inset-0 -z-10"></div>
-  <div class="glow -top-40 left-1/4 size-[36rem] bg-primary/30"></div>
-  <div class="glow -right-32 bottom-0 size-[26rem] bg-accent/15"></div>
-  <div class="container-x grid items-center gap-14 pb-20 pt-16 sm:pb-24 sm:pt-20 lg:grid-cols-12 lg:gap-8 lg:pb-28 lg:pt-24">
-    <div class="lg:col-span-6 xl:col-span-6">
-      {% if section.eyebrow %}
-      <p class="inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-300 ring-1 ring-white/10 motion-safe:animate-[fade-up_.8s_ease-out_both]">
-        <span class="relative flex size-2"><span class="absolute inline-flex size-full rounded-full bg-accent opacity-75 motion-safe:animate-ping"></span><span class="relative inline-flex size-2 rounded-full bg-accent"></span></span>
-        {{ section.eyebrow }}
-      </p>
-      {% endif %}
-      <h1 id="hero-title-{{ section.pk }}" class="h-display mt-6 motion-safe:animate-[fade-up_.8s_.08s_ease-out_both]">{{ section.title|emphasis }}</h1>
-      {% if section.subtitle %}<p class="lead mt-6 max-w-xl motion-safe:animate-[fade-up_.8s_.16s_ease-out_both]">{{ section.subtitle }}</p>{% endif %}
-      <div class="mt-9 flex flex-col gap-3 sm:flex-row motion-safe:animate-[fade-up_.8s_.24s_ease-out_both]">
-        {% if section.cta_label %}<a href="{{ section.cta_url }}" class="btn btn-primary btn-lg">{{ section.cta_label }} {% icon "arrow-right" "size-4" %}</a>{% endif %}
-        {% if section.cta2_label %}<a href="{{ section.cta2_url }}" class="btn btn-light btn-lg">{% icon "headset" "size-4" %} {{ section.cta2_label }}</a>{% endif %}
-      </div>
-      {% if section.items.all %}
-      <ul class="mt-10 grid gap-x-6 gap-y-3 text-sm text-slate-400 sm:grid-cols-2 motion-safe:animate-[fade-up_.8s_.32s_ease-out_both]">
-        {% for item in section.items.all %}<li class="flex items-center gap-2.5">{% icon item.icon|default:"circle-check" "size-4 text-accent shrink-0" %}{{ item.title }}</li>{% endfor %}
-      </ul>
-      {% endif %}
+<section class="relative isolate overflow-hidden" {% if section.anchor %}id="{{ section.anchor }}"{% endif %} aria-labelledby="hero-title-{{ section.pk }}">
+  <div class="grid-pattern absolute inset-0 -z-10 opacity-60"></div>
+  <div class="glow -left-40 top-10 size-[34rem] bg-primary/25"></div>
+  <div class="glow right-0 top-1/3 size-[26rem] bg-violet-600/15"></div>
+
+  <div class="container-x relative grid items-center gap-12 pt-14 sm:pt-20 lg:grid-cols-12 lg:gap-8 lg:pt-24">
+    <div class="relative order-last mx-auto w-56 sm:w-72 lg:order-none lg:col-span-5 lg:w-full lg:max-w-md" aria-hidden="true">
+      {% if section.image %}<img src="{{ section.image.url }}" alt="{{ section.image_alt }}" class="w-full" width="480" height="480" fetchpriority="high">
+      {% else %}{% include "public/includes/ring_visual.html" with uid="hero" %}{% endif %}
     </div>
-    <div class="lg:col-span-6 xl:col-span-6">
-      {% if section.image %}
-        <img src="{{ section.image.url }}" alt="{{ section.image_alt }}" class="mx-auto w-full max-w-xl rounded-3xl" width="640" height="560" fetchpriority="high">
-      {% else %}
-        {% include "public/includes/hero_visual.html" %}
-      {% endif %}
+    <div class="lg:col-span-7">
+      {% if section.eyebrow %}<p class="eyebrow motion-safe:animate-[fade-up_.8s_ease-out_both]">{{ section.eyebrow }}</p>{% endif %}
+      <h1 id="hero-title-{{ section.pk }}" class="h-display mt-6 motion-safe:animate-[fade-up_.8s_.08s_ease-out_both]">{{ section.title|emphasis }}</h1>
+      <div class="mt-8 flex flex-col gap-8 sm:flex-row sm:items-center motion-safe:animate-[fade-up_.8s_.16s_ease-out_both]">
+        {% if section.subtitle %}<p class="lead max-w-xl flex-1">{{ section.subtitle }}</p>{% endif %}
+        {% if section.cta2_label %}
+        <a href="{{ section.cta2_url }}" class="btn-circle group">
+          <span class="flex flex-col items-center gap-2 px-4">{{ section.cta2_label }}{% icon "arrow-down-right" "size-5 transition group-hover:-rotate-45" %}</span>
+        </a>
+        {% endif %}
+      </div>
+      <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4 motion-safe:animate-[fade-up_.8s_.24s_ease-out_both]">
+        {% if section.cta_label %}<a href="{{ section.cta_url }}" class="btn btn-primary btn-lg">{{ section.cta_label }} {% icon "arrow-up-right" "size-4" %}</a>{% endif %}
+        {% if section.items.all %}
+        <ul class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-400">
+          {% for item in section.items.all %}<li class="flex items-center gap-2">{% icon item.icon|default:"circle-check" "size-4 text-primary-400 shrink-0" %}{{ item.title }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+      </div>
     </div>
   </div>
+
+  {# Oversized brand word, clipped at the bottom of the hero #}
+  <p class="pointer-events-none mt-12 select-none overflow-hidden whitespace-nowrap text-center font-display leading-[0.78] text-white/95 sm:mt-16" aria-hidden="true"
+     style="font-size: clamp(5rem, 22vw, 21rem)">{{ site.company_name }}</p>
 </section>

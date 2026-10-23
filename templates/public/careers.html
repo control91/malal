@@ -7,11 +7,11 @@
     <ul class="mt-6 space-y-3">
       {% for job in jobs %}
       <li><a href="{{ job.get_absolute_url }}" class="card card-hover flex flex-col gap-3 !p-6 sm:flex-row sm:items-center sm:justify-between">
-        <span><span class="block text-lg font-semibold text-ink">{{ job.title }}</span><span class="mt-1 flex flex-wrap gap-3 text-sm text-slate-500"><span class="flex items-center gap-1.5">{% icon "map-pin" "size-4" %}{{ job.location }}{% if job.remote_possible %} · télétravail possible{% endif %}</span><span class="flex items-center gap-1.5">{% icon "briefcase" "size-4" %}{{ job.get_contract_display }}</span>{% if job.department %}<span>{{ job.department }}</span>{% endif %}</span></span>
+        <span><span class="block text-lg font-semibold text-white">{{ job.title }}</span><span class="mt-1 flex flex-wrap gap-3 text-sm text-slate-500"><span class="flex items-center gap-1.5">{% icon "map-pin" "size-4" %}{{ job.location }}{% if job.remote_possible %} · télétravail possible{% endif %}</span><span class="flex items-center gap-1.5">{% icon "briefcase" "size-4" %}{{ job.get_contract_display }}</span>{% if job.department %}<span>{{ job.department }}</span>{% endif %}</span></span>
         <span class="link-arrow">Voir l'offre {% icon "arrow-right" "size-4" %}</span>
       </a></li>
       {% empty %}
-      <li class="rounded-[var(--radius-card)] border border-dashed border-line p-10 text-center"><p class="font-semibold text-ink">Aucune offre ouverte actuellement.</p><p class="mt-2 text-sm text-slate-500">Les candidatures spontanées sont les bienvenues.</p><a href="{% url 'crm:contact' %}?type=career" class="btn btn-primary mt-5">Candidature spontanée</a></li>
+      <li class="rounded-[var(--radius-card)] border border-dashed border-white/10 p-10 text-center"><p class="font-semibold text-white">Aucune offre ouverte actuellement.</p><p class="mt-2 text-sm text-slate-500">Les candidatures spontanées sont les bienvenues.</p><a href="{% url 'crm:contact' %}?type=career" class="btn btn-primary mt-5">Candidature spontanée</a></li>
       {% endfor %}
     </ul>
   </div>

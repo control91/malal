@@ -27,7 +27,7 @@ ICONS: list[str] = [
     "shield", "shield-check", "lock", "key-round", "fingerprint", "eye", "eye-off", "scale",
     "life-buoy", "headset", "circle-help", "info",
     # UI
-    "arrow-right", "arrow-left", "arrow-up-right", "arrow-up", "arrow-down", "chevron-down", "chevron-right",
+    "arrow-right", "arrow-left", "arrow-up-right", "arrow-down-right", "arrow-up", "arrow-down", "chevron-down", "chevron-right",
     "chevron-left", "chevron-up", "chevrons-up-down", "check", "check-check", "circle-check", "circle-x", "x",
     "plus", "minus", "menu", "search", "filter", "list", "list-filter", "pencil", "trash-2", "copy",
     "external-link", "link", "download", "upload", "image", "images", "file", "folder", "paperclip",

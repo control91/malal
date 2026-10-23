@@ -1,18 +1,18 @@
-<div class="relative flex flex-col rounded-[var(--radius-card)] border bg-white p-7 transition {% if plan.is_highlighted %}border-primary shadow-[0_30px_60px_-30px_var(--brand-primary)] ring-1 ring-primary{% else %}border-line shadow-[var(--shadow-card)]{% endif %}" data-reveal>
+<div class="relative flex flex-col rounded-[var(--radius-card)] border bg-white/[0.03] p-7 transition {% if plan.is_highlighted %}border-primary shadow-[0_30px_60px_-30px_var(--brand-primary)] ring-1 ring-primary{% else %}border-white/10 shadow-[var(--shadow-card)]{% endif %}" data-reveal>
   {% if plan.is_highlighted %}<span class="absolute -top-3 left-7 badge bg-primary text-white shadow">Recommandé</span>{% endif %}
   <div class="flex items-start justify-between gap-3"><h3 class="text-lg font-semibold">{{ plan.name }}</h3>{% if plan.status != "available" %}{% include "public/includes/status_badge.html" with status=plan.status %}{% endif %}</div>
-  {% if plan.description %}<p class="mt-2 text-sm text-slate-600">{{ plan.description }}</p>{% endif %}
+  {% if plan.description %}<p class="mt-2 text-sm text-slate-400">{{ plan.description }}</p>{% endif %}
   <div class="mt-6 min-h-[5.5rem]">
     {% if plan.price_on_request or plan.price_monthly is None and plan.price_yearly is None %}
-      <p class="font-display text-3xl font-bold text-ink">Sur devis</p><p class="mt-1 text-sm text-slate-500">Tarif adapté à votre besoin</p>
+      <p class="font-display text-3xl font-bold text-white">Sur devis</p><p class="mt-1 text-sm text-slate-500">Tarif adapté à votre besoin</p>
     {% else %}
       <div {% if plan.price_monthly is not None %}x-show="billing === 'monthly' || {{ plan.price_yearly|yesno:'false,true' }}"{% endif %}>
-        {% if plan.price_monthly is not None %}<p class="flex items-baseline gap-1.5"><span class="font-display text-4xl font-bold tracking-tight text-ink">{{ plan.price_monthly|money }}</span><span class="text-sm font-medium text-slate-500">{{ plan.currency }} / mois</span></p>
+        {% if plan.price_monthly is not None %}<p class="flex items-baseline gap-1.5"><span class="font-display text-4xl font-bold tracking-tight text-white">{{ plan.price_monthly|money }}</span><span class="text-sm font-medium text-slate-500">{{ plan.currency }} / mois</span></p>
         {% if plan.price_yearly %}<p class="mt-1 text-sm text-slate-500">ou {{ plan.price_yearly|money:plan.currency }} / an</p>{% endif %}{% endif %}
       </div>
       {% if plan.price_yearly %}
       <div x-cloak x-show="billing === 'yearly'{% if plan.price_monthly is None %} || true{% endif %}">
-        <p class="flex items-baseline gap-1.5"><span class="font-display text-4xl font-bold tracking-tight text-ink">{{ plan.yearly_monthly_equivalent|money }}</span><span class="text-sm font-medium text-slate-500">{{ plan.currency }} / mois</span></p>
+        <p class="flex items-baseline gap-1.5"><span class="font-display text-4xl font-bold tracking-tight text-white">{{ plan.yearly_monthly_equivalent|money }}</span><span class="text-sm font-medium text-slate-500">{{ plan.currency }} / mois</span></p>
         <p class="mt-1 text-sm text-slate-500">facturé {{ plan.price_yearly|money:plan.currency }} / an {% if plan.yearly_saving_percent %}<span class="badge badge-available ml-1">−{{ plan.yearly_saving_percent }} %</span>{% endif %}</p>
       </div>
       {% endif %}
@@ -20,8 +20,8 @@
     {% endif %}
   </div>
   {% with features=plan.features.all %}{% if features %}
-  <ul class="mt-6 flex-1 space-y-3 border-t border-line pt-6 text-sm">
-    {% for f in features %}<li class="flex items-start gap-2.5 {% if not f.included %}text-slate-400{% else %}text-slate-700{% endif %}">{% if f.included %}{% icon "check" "size-4 mt-0.5 shrink-0 text-emerald-500" %}{% else %}{% icon "minus" "size-4 mt-0.5 shrink-0" %}{% endif %}<span>{{ f.label }}{% if f.value %} : <strong class="font-semibold {% if f.included %}text-ink{% endif %}">{{ f.value }}</strong>{% endif %}</span></li>{% endfor %}
+  <ul class="mt-6 flex-1 space-y-3 border-t border-white/10 pt-6 text-sm">
+    {% for f in features %}<li class="flex items-start gap-2.5 {% if not f.included %}text-slate-400{% else %}text-slate-300{% endif %}">{% if f.included %}{% icon "check" "size-4 mt-0.5 shrink-0 text-emerald-500" %}{% else %}{% icon "minus" "size-4 mt-0.5 shrink-0" %}{% endif %}<span>{{ f.label }}{% if f.value %} : <strong class="font-semibold {% if f.included %}text-white{% endif %}">{{ f.value }}</strong>{% endif %}</span></li>{% endfor %}
   </ul>
   {% else %}<div class="flex-1"></div>{% endif %}{% endwith %}
   <a href="{% if plan.cta_url %}{{ plan.cta_url }}{% else %}{% url 'crm:quote' %}?offre={{ plan.pk }}{% endif %}" class="btn {% if plan.is_highlighted %}btn-primary{% else %}btn-secondary{% endif %} mt-8 w-full">{% if plan.status == "coming_soon" %}Être informé{% else %}{{ plan.cta_label }}{% endif %}</a>

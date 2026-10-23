@@ -1,24 +1,24 @@
 {% load i18n %}
 <header data-header x-data="{ open: false }" @keydown.escape.window="open = false"
-        class="sticky top-0 z-40 border-b border-transparent bg-white/80 backdrop-blur-xl transition-[border-color,box-shadow] data-[scrolled]:border-line data-[scrolled]:shadow-[0_6px_24px_-18px_rgba(10,19,48,.35)]">
-  <nav class="container-x flex h-[4.25rem] items-center justify-between gap-6" aria-label="{% translate 'Navigation principale' %}">
-    <a href="/" class="shrink-0 rounded-lg" aria-label="{{ site.company_name }} — {% translate 'accueil' %}">{% include "public/includes/logo.html" with dark=False %}</a>
+        class="sticky top-0 z-40 border-b border-white/[0.06] bg-night/70 backdrop-blur-xl transition-colors data-[scrolled]:border-white/10 data-[scrolled]:bg-night/90">
+  <nav class="container-x flex h-20 items-center justify-between gap-6" aria-label="{% translate 'Navigation principale' %}">
+    <a href="/" class="shrink-0 rounded-lg" aria-label="{{ site.company_name }} — {% translate 'accueil' %}">{% include "public/includes/logo.html" with dark=True %}</a>
 
-    <ul class="hidden items-center gap-1 lg:flex">
+    <ul class="hidden items-center gap-1 xl:flex">
       {% for item in menus.header.items %}{% if not item.is_button %}
       <li class="relative" {% if item.children %}x-data="{ sub: false }" @mouseenter="sub = true" @mouseleave="sub = false" @focusout="if (!$el.contains($event.relatedTarget)) sub = false"{% endif %}>
         {% if item.children %}
-          <button type="button" class="nav-link inline-flex items-center gap-1 {% nav_active item.url %}" @click="sub = !sub" :aria-expanded="sub.toString()" aria-haspopup="true">
-            {{ item.label }} {% icon "chevron-down" "size-3.5 transition" %}
+          <button type="button" class="nav-link inline-flex items-center gap-1.5 {% nav_active item.url %}" @click="sub = !sub" :aria-expanded="sub.toString()" aria-haspopup="true">
+            {{ item.label }} <span :class="sub && 'rotate-180'" class="transition">{% icon "chevron-down" "size-3.5" %}</span>
           </button>
-          <div x-cloak x-show="sub" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
+          <div x-cloak x-show="sub" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
                x-transition:leave="transition ease-in duration-100" x-transition:leave-end="opacity-0"
-               class="absolute left-1/2 top-full w-[34rem] -translate-x-1/2 pt-3">
-            <div class="grid grid-cols-2 gap-1 rounded-2xl border border-line bg-white p-3 shadow-[var(--shadow-lift)]">
+               class="absolute left-1/2 top-full w-[36rem] -translate-x-1/2 pt-4">
+            <div class="grid grid-cols-2 gap-1 rounded-xl border border-white/10 bg-night-800/95 p-3 shadow-2xl shadow-black/60 backdrop-blur-xl">
               {% for child in item.children %}
-              <a href="{{ child.url }}" {% if child.new_tab %}target="_blank" rel="noopener"{% endif %} class="group flex gap-3 rounded-xl p-3 transition hover:bg-surface">
-                <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-primary-50 text-primary ring-1 ring-primary-100 transition group-hover:bg-primary group-hover:text-white">{% icon child.icon|default:"arrow-up-right" "size-5" %}</span>
-                <span><span class="block text-sm font-semibold text-ink">{{ child.label }}</span>{% if child.description %}<span class="mt-0.5 block text-xs leading-snug text-slate-500">{{ child.description }}</span>{% endif %}</span>
+              <a href="{{ child.url }}" {% if child.new_tab %}target="_blank" rel="noopener"{% endif %} class="group flex gap-3.5 rounded-lg p-3 transition hover:bg-white/[0.05]">
+                <span class="grid size-10 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary-400 ring-1 ring-primary/25 transition group-hover:bg-primary group-hover:text-white">{% icon child.icon|default:"arrow-up-right" "size-5" %}</span>
+                <span><span class="block text-[0.95rem] font-medium text-white">{{ child.label }}</span>{% if child.description %}<span class="mt-0.5 block text-sm leading-snug text-slate-400">{{ child.description }}</span>{% endif %}</span>
               </a>
               {% endfor %}
             </div>
@@ -30,43 +30,44 @@
       {% endif %}{% endfor %}
     </ul>
 
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-3">
+      {% if site.phone %}<a href="tel:{{ site.phone }}" class="hidden items-center gap-3 text-sm 2xl:flex"><span class="grid size-10 place-items-center rounded-full border border-white/15 text-primary-400">{% icon "phone" "size-4" %}</span><span><span class="block text-xs text-slate-500">{% translate "Appelez-nous" %}</span><span class="font-medium text-white">{{ site.phone }}</span></span></a>{% endif %}
       {% for item in menus.header.items %}{% if item.is_button %}
-        <a href="{{ item.url }}" class="btn btn-primary hidden sm:inline-flex">{{ item.label }} {% icon "arrow-right" "size-4" %}</a>
+        <a href="{{ item.url }}" class="btn btn-primary hidden sm:inline-flex">{{ item.label }} {% icon "arrow-up-right" "size-4" %}</a>
       {% endif %}{% endfor %}
-      <button type="button" class="btn btn-ghost size-11 rounded-full p-0 lg:hidden" @click="open = true" aria-label="{% translate 'Ouvrir le menu' %}" :aria-expanded="open.toString()">{% icon "menu" "size-6" %}</button>
+      <button type="button" class="grid size-11 place-items-center rounded-lg border border-white/15 text-white transition hover:bg-white/10 xl:hidden" @click="open = true" aria-label="{% translate 'Ouvrir le menu' %}" :aria-expanded="open.toString()">{% icon "menu" "size-5" %}</button>
     </div>
   </nav>
 
-  {# Mobile drawer #}
-  <div x-cloak x-show="open" class="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="{% translate 'Menu' %}">
-    <div x-show="open" x-transition.opacity class="absolute inset-0 bg-ink/60 backdrop-blur-sm" @click="open = false"></div>
+  {# Off-canvas menu (mobile & tablet) #}
+  <div x-cloak x-show="open" class="fixed inset-0 z-50 xl:hidden" role="dialog" aria-modal="true" aria-label="{% translate 'Menu' %}">
+    <div x-show="open" x-transition.opacity class="absolute inset-0 bg-black/70 backdrop-blur-sm" @click="open = false"></div>
     <div x-show="open" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
          x-transition:leave="transition ease-in duration-200" x-transition:leave-end="translate-x-full"
-         class="absolute inset-y-0 right-0 flex w-[min(24rem,100%)] flex-col overflow-y-auto bg-white p-6 shadow-2xl" x-trap.noscroll="open">
-      <div class="mb-6 flex items-center justify-between">
-        {% include "public/includes/logo.html" with dark=False %}
-        <button type="button" class="btn btn-ghost size-10 rounded-full p-0" @click="open = false" aria-label="{% translate 'Fermer le menu' %}">{% icon "x" "size-6" %}</button>
+         class="absolute inset-y-0 right-0 flex w-[min(24rem,100%)] flex-col overflow-y-auto border-l border-white/10 bg-night-800 p-6" x-trap.noscroll="open">
+      <div class="mb-8 flex items-center justify-between">
+        {% include "public/includes/logo.html" with dark=True %}
+        <button type="button" class="grid size-10 place-items-center rounded-lg border border-white/15 text-white" @click="open = false" aria-label="{% translate 'Fermer le menu' %}">{% icon "x" "size-5" %}</button>
       </div>
       <ul class="space-y-1">
         {% for item in menus.header.items %}
         <li {% if item.children %}x-data="{ sub: false }"{% endif %}>
           {% if item.children %}
-            <button type="button" class="flex w-full items-center justify-between rounded-xl px-3 py-3 text-base font-semibold text-ink hover:bg-surface" @click="sub = !sub" :aria-expanded="sub.toString()">{{ item.label }} <span :class="sub && 'rotate-180'" class="transition">{% icon "chevron-down" "size-5" %}</span></button>
-            <ul x-show="sub" x-collapse class="mb-2 ml-3 space-y-0.5 border-l border-line pl-3">
-              {% for child in item.children %}<li><a href="{{ child.url }}" class="flex items-center gap-2.5 rounded-lg px-2 py-2 text-sm text-slate-600 hover:text-primary">{% icon child.icon|default:"arrow-up-right" "size-4 text-primary" %}{{ child.label }}</a></li>{% endfor %}
+            <button type="button" class="flex w-full items-center justify-between rounded-lg px-3 py-3 font-display text-lg text-white hover:bg-white/5" @click="sub = !sub" :aria-expanded="sub.toString()">{{ item.label }} <span :class="sub && 'rotate-180'" class="transition">{% icon "chevron-down" "size-5" %}</span></button>
+            <ul x-show="sub" x-collapse class="mb-2 ml-3 space-y-0.5 border-l border-white/10 pl-3">
+              {% for child in item.children %}<li><a href="{{ child.url }}" class="flex items-center gap-2.5 rounded-lg px-2 py-2 text-slate-300 hover:text-white">{% icon child.icon|default:"arrow-up-right" "size-4 text-primary-400" %}{{ child.label }}</a></li>{% endfor %}
             </ul>
           {% elif item.is_button %}
-            <a href="{{ item.url }}" class="btn btn-primary btn-lg mt-4 w-full">{{ item.label }}</a>
+            <a href="{{ item.url }}" class="btn btn-primary btn-lg mt-6 w-full">{{ item.label }}</a>
           {% else %}
-            <a href="{{ item.url }}" class="block rounded-xl px-3 py-3 text-base font-semibold text-ink hover:bg-surface">{{ item.label }}</a>
+            <a href="{{ item.url }}" class="block rounded-lg px-3 py-3 font-display text-lg text-white hover:bg-white/5">{{ item.label }}</a>
           {% endif %}
         </li>
         {% endfor %}
       </ul>
-      <div class="mt-auto pt-8 text-sm text-slate-500">
-        {% if site.phone %}<a href="tel:{{ site.phone }}" class="flex items-center gap-2 py-1">{% icon "phone" "size-4" %}{{ site.phone }}</a>{% endif %}
-        <a href="mailto:{{ site.email_contact }}" class="flex items-center gap-2 py-1">{% icon "mail" "size-4" %}{{ site.email_contact }}</a>
+      <div class="mt-auto space-y-2 border-t border-white/10 pt-6 text-sm text-slate-400">
+        {% if site.phone %}<a href="tel:{{ site.phone }}" class="flex items-center gap-2.5">{% icon "phone" "size-4 text-primary-400" %}{{ site.phone }}</a>{% endif %}
+        <a href="mailto:{{ site.email_contact }}" class="flex items-center gap-2.5">{% icon "mail" "size-4 text-primary-400" %}{{ site.email_contact }}</a>
       </div>
     </div>
   </div>

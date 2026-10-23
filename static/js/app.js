@@ -25,6 +25,20 @@
     onScroll();
   }
 
+  // Back-to-top button with a scroll-progress ring.
+  var toTop = document.querySelector("[data-to-top]");
+  if (toTop) {
+    var ring = toTop.querySelector("[data-to-top-ring]");
+    var onProgress = function () {
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      var ratio = max > 0 ? window.scrollY / max : 0;
+      toTop.hidden = window.scrollY < 400;
+      if (ring) ring.setAttribute("stroke-dashoffset", String(100 - ratio * 100));
+    };
+    window.addEventListener("scroll", onProgress, { passive: true });
+    onProgress();
+  }
+
   // Copy-link buttons (article sharing).
   document.addEventListener("click", function (event) {
     var button = event.target.closest("[data-copy]");

@@ -13,7 +13,7 @@
           <button type="button" role="tab" @click="pick({{ forloop.counter }})" :aria-selected="(phase === {{ forloop.counter }}).toString()"
                   :class="phase === {{ forloop.counter }} ? 'bg-white/10 ring-accent/50' : 'bg-white/[0.03] ring-white/10 hover:bg-white/[0.06]'"
                   class="flex w-full gap-4 rounded-2xl p-5 text-left ring-1 transition">
-            <span :class="phase === {{ forloop.counter }} ? 'bg-accent text-ink' : 'bg-white/10 text-slate-300'" class="grid size-9 shrink-0 place-items-center rounded-full text-sm font-bold transition">{{ forloop.counter }}</span>
+            <span :class="phase === {{ forloop.counter }} ? 'bg-accent text-white' : 'bg-white/10 text-slate-300'" class="grid size-9 shrink-0 place-items-center rounded-full text-sm font-bold transition">{{ forloop.counter }}</span>
             <span>
               <span class="flex flex-wrap items-center gap-2"><span class="font-semibold text-white">{{ item.title }}</span>{% if item.badge %}<span class="badge bg-white/10 text-slate-300">{{ item.badge }}</span>{% endif %}
                 {% if item.progress == "in_progress" %}<span class="badge bg-emerald-400/15 text-emerald-300">En cours</span>{% elif item.progress == "planned" %}<span class="badge bg-white/5 text-slate-400">Ambition</span>{% elif item.progress == "done" %}<span class="badge bg-emerald-400/15 text-emerald-300">Réalisé</span>{% endif %}</span>

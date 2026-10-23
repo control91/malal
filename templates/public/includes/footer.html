@@ -1,50 +1,60 @@
 {% load i18n %}
-<footer class="dark-zone" aria-labelledby="footer-title">
+<footer class="relative isolate overflow-hidden border-t border-white/10 bg-night" aria-labelledby="footer-title">
   <h2 id="footer-title" class="sr-only">{% translate "Pied de page" %}</h2>
-  <div class="grid-pattern absolute inset-0 -z-10 opacity-60"></div>
-  <div class="glow -left-40 top-0 size-[28rem] bg-primary/20"></div>
+  <div class="glow -left-40 bottom-0 size-[30rem] bg-primary/15"></div>
   <div class="container-x py-16 sm:py-20">
     <div class="grid gap-12 lg:grid-cols-12">
+      {# Where to find us #}
       <div class="lg:col-span-4">
-        <a href="/" class="inline-block">{% include "public/includes/logo.html" with dark=True %}</a>
-        <p class="mt-5 max-w-sm text-sm leading-relaxed text-slate-400">{{ site.footer_text|default:site.tagline }}</p>
-        <div class="mt-6 space-y-2 text-sm">
-          {% if site.address or site.city %}<p class="flex items-start gap-2.5">{% icon "map-pin" "size-4 mt-0.5 text-accent shrink-0" %}<span>{% if site.address %}{{ site.address }}, {% endif %}{{ site.city }}, {{ site.country }}</span></p>{% endif %}
-          <p class="flex items-center gap-2.5">{% icon "mail" "size-4 text-accent" %}<a href="mailto:{{ site.email_contact }}" class="hover:text-white">{{ site.email_contact }}</a></p>
-          {% if site.phone %}<p class="flex items-center gap-2.5">{% icon "phone" "size-4 text-accent" %}<a href="tel:{{ site.phone }}" class="hover:text-white">{{ site.phone }}</a></p>{% endif %}
+        <h3 class="font-display text-xl">{% translate "Où nous trouver" %}</h3>
+        <ul class="mt-7 space-y-6 text-[0.95rem]">
+          <li class="flex gap-4"><span class="grid size-11 shrink-0 place-items-center rounded-full border border-white/15 text-primary-400">{% icon "map-pin" "size-5" %}</span>
+            <span><span class="block font-medium text-white">{% if site.address %}{{ site.address }}{% else %}{{ site.city }}{% endif %}</span><span class="text-slate-400">{% if site.address %}{{ site.city }}, {% endif %}{{ site.country }}</span></span></li>
+          {% if site.phone %}<li class="flex gap-4"><span class="grid size-11 shrink-0 place-items-center rounded-full border border-white/15 text-primary-400">{% icon "phone" "size-5" %}</span>
+            <span><a href="tel:{{ site.phone }}" class="block font-medium text-white hover:text-primary-400">{{ site.phone }}</a><span class="text-slate-400">{{ site.opening_hours|default:_("Du lundi au vendredi") }}</span></span></li>{% endif %}
+          <li class="flex gap-4"><span class="grid size-11 shrink-0 place-items-center rounded-full border border-white/15 text-primary-400">{% icon "mail" "size-5" %}</span>
+            <span><a href="mailto:{{ site.email_contact }}" class="block font-medium text-white hover:text-primary-400">{{ site.email_contact }}</a><span class="text-slate-400">{% translate "Réponse par un membre de l'équipe" %}</span></span></li>
+        </ul>
+      </div>
+
+      {# Newsletter + quick links #}
+      <div class="lg:col-span-5">
+        <h3 class="font-display text-xl">{% translate "Newsletter" %}</h3>
+        <p class="mt-3 text-[0.95rem] text-slate-400">{% translate "Une sélection mensuelle de ressources sur le Cloud, le SaaS et l'IA. Pas de spam." %}</p>
+        {% include "public/includes/newsletter_form.html" %}
+        <div class="mt-10 grid gap-8 sm:grid-cols-3">
+          {% for menu_key, menu in menus.items %}{% if menu_key != "header" and menu_key != "footer_legal" and menu.items %}
+          <div>
+            <h4 class="font-display text-base">{{ menu.title }}</h4>
+            <ul class="mt-4 space-y-2.5 text-[0.95rem]">
+              {% for item in menu.items %}<li><a href="{{ item.url }}" class="text-slate-400 transition hover:text-white" {% if item.new_tab %}target="_blank" rel="noopener"{% endif %}>{{ item.label }}</a></li>{% endfor %}
+            </ul>
+          </div>
+          {% endif %}{% endfor %}
         </div>
+      </div>
+
+      {# Call center #}
+      <div class="lg:col-span-3 lg:text-right">
+        <h3 class="font-display text-xl">{% translate "Parlons de votre projet" %}</h3>
+        {% if site.phone %}<a href="tel:{{ site.phone }}" class="mt-6 block font-display text-3xl text-white transition hover:text-primary-400">{{ site.phone }}</a>{% endif %}
+        <a href="{% url 'crm:quote' %}" class="mt-3 inline-flex items-center gap-2 text-slate-300 hover:text-white">{% translate "et obtenez un devis personnalisé" %} {% icon "arrow-up-right" "size-4" %}</a>
         {% if site.social_links %}
-        <ul class="mt-6 flex gap-2" aria-label="{% translate 'Réseaux sociaux' %}">
+        <ul class="mt-8 flex gap-2 lg:justify-end" aria-label="{% translate 'Réseaux sociaux' %}">
           {% for label, url, icon_name in site.social_links %}
-          <li><a href="{{ url }}" target="_blank" rel="noopener" class="grid size-10 place-items-center rounded-full bg-white/5 text-slate-300 ring-1 ring-white/10 transition hover:bg-white/10 hover:text-white">{% icon icon_name "size-4" label=label %}</a></li>
+          <li><a href="{{ url }}" target="_blank" rel="noopener" class="grid size-10 place-items-center rounded-full border border-white/15 text-slate-300 transition hover:border-primary hover:bg-primary hover:text-white">{% icon icon_name "size-4" label=label %}</a></li>
           {% endfor %}
         </ul>
         {% endif %}
       </div>
-
-      <div class="grid gap-10 sm:grid-cols-3 lg:col-span-5">
-        {% for menu_key, menu in menus.items %}{% if menu_key != "header" and menu_key != "footer_legal" and menu.items %}
-        <div>
-          <h3 class="text-sm font-semibold text-white">{{ menu.title }}</h3>
-          <ul class="mt-4 space-y-2.5 text-sm">
-            {% for item in menu.items %}<li><a href="{{ item.url }}" class="text-slate-400 transition hover:text-white" {% if item.new_tab %}target="_blank" rel="noopener"{% endif %}>{{ item.label }}</a></li>{% endfor %}
-          </ul>
-        </div>
-        {% endif %}{% endfor %}
-      </div>
-
-      <div class="lg:col-span-3">
-        <h3 class="text-sm font-semibold text-white">{% translate "Newsletter" %}</h3>
-        <p class="mt-4 text-sm text-slate-400">{% translate "Une sélection mensuelle de ressources sur le Cloud, le SaaS et l'IA. Pas de spam." %}</p>
-        {% include "public/includes/newsletter_form.html" %}
-      </div>
     </div>
 
-    <div class="mt-14 flex flex-col gap-4 border-t border-white/10 pt-8 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-      <p>© {{ site.year }} {{ site.legal_name|default:site.company_name }}. {% translate "Tous droits réservés." %}{% if site.registration_number %} · RCCM {{ site.registration_number }}{% endif %}</p>
-      <ul class="flex flex-wrap gap-x-5 gap-y-2">
+    <div class="mt-16 flex flex-col gap-6 border-t border-white/10 pt-8 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
+      <a href="/" class="shrink-0">{% include "public/includes/logo.html" with dark=True %}</a>
+      <ul class="flex flex-wrap gap-x-6 gap-y-2">
         {% for item in menus.footer_legal.items %}<li><a href="{{ item.url }}" class="hover:text-white">{{ item.label }}</a></li>{% endfor %}
       </ul>
+      <p>© {{ site.year }} {{ site.legal_name|default:site.company_name }}{% if site.registration_number %} · RCCM {{ site.registration_number }}{% endif %}</p>
     </div>
   </div>
 </footer>

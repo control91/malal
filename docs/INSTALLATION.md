@@ -66,7 +66,7 @@ npm run build
 `npm run build` exécute :
 
 1. `scripts/vendor.mjs` : copie Alpine.js (+ plugins focus/collapse), htmx, Trix, les polices
-   Inter/Manrope et les icônes Lucide listées dans `apps/core/icons.py` vers `static/`, et génère
+   Jost, Russo One, Inter, Manrope et les icônes Lucide listées dans `apps/core/icons.py` vers `static/`, et génère
    `static/icons/sprite.svg` (sélecteur d'icônes du back-office) ;
 2. Tailwind : `assets/css/main.css` → `static/css/main.css`.
 

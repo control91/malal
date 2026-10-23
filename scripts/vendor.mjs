@@ -20,10 +20,14 @@ copy("trix/dist/trix.umd.min.js", "vendor/trix.umd.min.js");
 copy("trix/dist/trix.umd.min.js.map", "vendor/trix.umd.min.js.map");
 copy("trix/dist/trix.css", "vendor/trix.css");
 
-for (const [pkg, prefix] of [["@fontsource-variable/inter", "inter"], ["@fontsource-variable/manrope", "manrope"]]) {
+for (const [pkg, prefix] of [["@fontsource-variable/inter", "inter"], ["@fontsource-variable/manrope", "manrope"], ["@fontsource-variable/jost", "jost"]]) {
   for (const subset of ["latin", "latin-ext"]) {
     copy(`${pkg}/files/${prefix}-${subset}-wght-normal.woff2`, `fonts/${prefix}-${subset}-wght-normal.woff2`);
   }
+}
+
+for (const subset of ["latin", "latin-ext"]) {
+  copy(`@fontsource/russo-one/files/russo-one-${subset}-400-normal.woff2`, `fonts/russo-one-${subset}-400-normal.woff2`);
 }
 
 // Icons: parse the Python list so there is a single source of truth.

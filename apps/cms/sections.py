@@ -11,10 +11,11 @@ def load_sections(page):
     )
     kinds = {section.kind for section in sections}
     data = {}
-    if "domains" in kinds:
+    if kinds & {"domains", "marquee"}:
         from apps.services.models import ServiceCategory
 
         data["domains"] = list(ServiceCategory.objects.filter(is_published=True, show_on_home=True))
+        data["marquee"] = data["domains"]
     if "solutions" in kinds:
         from apps.products.models import Product
 

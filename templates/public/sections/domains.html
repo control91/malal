@@ -1,17 +1,21 @@
 <section class="section {{ section|theme_class }}" {% if section.anchor %}id="{{ section.anchor }}"{% endif %}>
   <div class="container-x">
-    {% include "public/includes/section_heading.html" %}
-    <div class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="grid gap-8 lg:grid-cols-12 lg:items-end">
+      <div class="lg:col-span-7">{% include "public/includes/section_heading.html" with align="left" %}</div>
+      <div class="flex items-end justify-between gap-8 lg:col-span-5">
+        {% if section.body %}<div class="prose-brand text-[0.95rem]">{{ section.body|safe }}</div>{% endif %}
+        <a href="{{ section.cta_url|default:'/solutions/' }}" class="btn-circle group hidden sm:inline-grid"><span class="flex flex-col items-center gap-2 px-4">{{ section.cta_label|default:"Toutes nos solutions" }}{% icon "arrow-down-right" "size-5 transition group-hover:-rotate-45" %}</span></a>
+      </div>
+    </div>
+    <div class="mt-14">
       {% for domain in section.data %}
-      <a href="{{ domain.get_absolute_url }}" class="card card-hover group flex flex-col" data-reveal style="--reveal-delay: {% widthratio forloop.counter0 1 70 %}ms">
-        <span class="icon-tile transition group-hover:bg-primary group-hover:text-white">{% icon domain.icon|default:"layers" "size-6" %}</span>
-        <h3 class="mt-6 text-xl font-semibold">{{ domain.name }}</h3>
-        <p class="mt-3 flex-1 text-[0.95rem] leading-relaxed text-slate-600">{{ domain.summary }}</p>
-        <span class="link-arrow mt-6">Explorer {% icon "arrow-right" "size-4" %}</span>
+      <a href="{{ domain.get_absolute_url }}" class="row-link group" data-reveal>
+        <span class="font-display text-lg text-primary-400">{{ forloop.counter|stringformat:"02d" }}</span>
+        <h3 class="flex items-center gap-4 font-display text-2xl transition group-hover:text-primary-400 sm:text-3xl">{% icon domain.icon|default:"layers" "size-7 shrink-0 text-slate-500 transition group-hover:text-primary-400" %}{{ domain.name }}</h3>
+        <p class="text-[0.95rem] leading-relaxed text-slate-400">{{ domain.summary }}</p>
+        <span class="row-arrow justify-self-start sm:justify-self-end">{% icon "arrow-right" "size-5" %}</span>
       </a>
-      {% empty %}
-      <p class="col-span-full text-center text-slate-500">Les domaines d'expertise seront bientôt présentés ici.</p>
-      {% endfor %}
+      {% empty %}<p class="text-slate-500">Les domaines d'expertise seront bientôt présentés ici.</p>{% endfor %}
     </div>
   </div>
 </section>

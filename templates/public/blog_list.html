@@ -15,7 +15,7 @@
     {% if q %}<p class="mt-6 text-sm text-slate-500">{{ page_obj.paginator.count }} résultat{{ page_obj.paginator.count|pluralize }} pour « {{ q }} »</p>{% endif %}
     <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {% for article in page_obj %}{% include "public/includes/article_card.html" %}
-      {% empty %}<div class="col-span-full rounded-[var(--radius-card)] border border-dashed border-line p-12 text-center text-slate-500">Aucun article pour le moment.</div>{% endfor %}
+      {% empty %}<div class="col-span-full rounded-[var(--radius-card)] border border-dashed border-white/10 p-12 text-center text-slate-500">Aucun article pour le moment.</div>{% endfor %}
     </div>
     {% include "public/includes/pagination.html" %}
   </div>

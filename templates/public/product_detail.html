@@ -38,7 +38,7 @@
     <div class="mx-auto max-w-2xl text-center" data-reveal><p class="eyebrow">Fonctionnalités</p><h2 class="h-section mt-4">Ce que {{ product.name }} vous apporte</h2></div>
     <div class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {% for feature in product.features.all %}
-      <div class="card" data-reveal><span class="icon-tile">{% icon feature.icon|default:"sparkles" "size-6" %}</span><h3 class="mt-5 text-lg font-semibold">{{ feature.title }}</h3>{% if feature.description %}<p class="mt-2 text-sm leading-relaxed text-slate-600">{{ feature.description }}</p>{% endif %}</div>
+      <div class="card" data-reveal><span class="icon-tile">{% icon feature.icon|default:"sparkles" "size-6" %}</span><h3 class="mt-5 text-lg font-semibold">{{ feature.title }}</h3>{% if feature.description %}<p class="mt-2 text-sm leading-relaxed text-slate-400">{{ feature.description }}</p>{% endif %}</div>
       {% endfor %}
     </div>
   </div>
@@ -51,9 +51,9 @@
     <div class="prose-brand lg:col-span-7" data-reveal>{{ product.description|safe }}</div>
     {% if product.benefits or product.audience %}
     <aside class="lg:col-span-5" data-reveal><div class="card">
-      {% if product.audience %}<p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Pour qui ?</p><p class="mt-2 text-ink">{{ product.audience }}</p>{% endif %}
+      {% if product.audience %}<p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Pour qui ?</p><p class="mt-2 text-white">{{ product.audience }}</p>{% endif %}
       {% if product.benefits %}<p class="mt-6 text-xs font-semibold uppercase tracking-wider text-slate-400">Avantages</p>
-      <ul class="mt-3 space-y-3">{% for line in product.benefits|split_lines %}<li class="flex gap-3 text-sm text-slate-700">{% icon "circle-check" "size-5 shrink-0 text-emerald-500" %}{{ line }}</li>{% endfor %}</ul>{% endif %}
+      <ul class="mt-3 space-y-3">{% for line in product.benefits|split_lines %}<li class="flex gap-3 text-sm text-slate-300">{% icon "circle-check" "size-5 shrink-0 text-emerald-500" %}{{ line }}</li>{% endfor %}</ul>{% endif %}
     </div></aside>
     {% endif %}
   </div>
@@ -65,7 +65,7 @@
   <div class="container-x">
     <h2 class="font-display text-2xl font-bold" data-reveal>Captures d'écran</h2>
     <div class="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-      {% for shot in product.screenshots.all %}<figure class="overflow-hidden rounded-2xl border border-line bg-white" data-reveal><img src="{{ shot.image.url }}" alt="{{ shot.caption|default:product.name }}" loading="lazy" class="aspect-video w-full object-cover" width="640" height="360">{% if shot.caption %}<figcaption class="px-4 py-3 text-sm text-slate-600">{{ shot.caption }}</figcaption>{% endif %}</figure>{% endfor %}
+      {% for shot in product.screenshots.all %}<figure class="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]" data-reveal><img src="{{ shot.image.url }}" alt="{{ shot.caption|default:product.name }}" loading="lazy" class="aspect-video w-full object-cover" width="640" height="360">{% if shot.caption %}<figcaption class="px-4 py-3 text-sm text-slate-400">{{ shot.caption }}</figcaption>{% endif %}</figure>{% endfor %}
     </div>
   </div>
 </section>
@@ -75,7 +75,7 @@
 <section class="section-sm" id="tarifs">
   <div class="container-x">
     <h2 class="font-display text-2xl font-bold" data-reveal>Tarifs — {{ group.name }}</h2>
-    {% if group.description %}<p class="mt-2 text-slate-600">{{ group.description }}</p>{% endif %}
+    {% if group.description %}<p class="mt-2 text-slate-400">{{ group.description }}</p>{% endif %}
     <div class="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3" x-data="{ billing: 'monthly' }">{% for plan in group.plans.all %}{% if plan.is_published %}{% include "public/includes/plan_card.html" with billing="monthly" static=True %}{% endif %}{% endfor %}</div>
   </div>
 </section>

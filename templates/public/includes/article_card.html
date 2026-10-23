@@ -1,15 +1,15 @@
-<article class="group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] border border-line bg-white shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]" data-reveal>
+<article class="group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] border border-white/10 bg-white/[0.03] shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]" data-reveal>
   <div class="relative aspect-[16/9] overflow-hidden bg-gradient-to-br from-ink via-ink-800 to-primary-700">
     {% if article.cover %}<img src="{{ article.cover.url }}" alt="{{ article.cover_alt }}" class="size-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" width="640" height="360">
     {% else %}<div class="grid-pattern absolute inset-0"></div><div class="absolute inset-0 grid place-items-center text-white/40">{% icon "newspaper" "size-10" %}</div>{% endif %}
   </div>
   <div class="flex flex-1 flex-col p-6">
     <div class="flex items-center gap-3 text-xs text-slate-500">
-      {% if article.category %}<span class="font-semibold text-primary">{{ article.category.name }}</span><span aria-hidden="true">·</span>{% endif %}
+      {% if article.category %}<span class="font-semibold text-primary-400">{{ article.category.name }}</span><span aria-hidden="true">·</span>{% endif %}
       <time datetime="{{ article.published_at|date:'c' }}">{{ article.published_at|date:"j M Y" }}</time>
       <span aria-hidden="true">·</span><span>{{ article.reading_time }} min</span>
     </div>
     <h3 class="mt-3 text-lg font-semibold leading-snug"><a href="{{ article.get_absolute_url }}" class="after:absolute after:inset-0">{{ article.title }}</a></h3>
-    {% if article.excerpt %}<p class="mt-2.5 line-clamp-3 flex-1 text-sm leading-relaxed text-slate-600">{{ article.excerpt }}</p>{% endif %}
+    {% if article.excerpt %}<p class="mt-2.5 line-clamp-3 flex-1 text-sm leading-relaxed text-slate-400">{{ article.excerpt }}</p>{% endif %}
   </div>
 </article>

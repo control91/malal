@@ -1,11 +1,11 @@
-<article class="group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] border border-line bg-white shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]" data-reveal>
+<article class="group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] border border-white/10 bg-white/[0.03] shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]" data-reveal>
   <div class="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-ink to-primary-700">
     {% if case.cover %}<img src="{{ case.cover.url }}" alt="" class="size-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" width="640" height="400">{% else %}<div class="grid-pattern absolute inset-0"></div><div class="absolute inset-0 grid place-items-center text-white/40">{% icon "award" "size-10" %}</div>{% endif %}
-    <div class="absolute left-4 top-4 flex gap-2"><span class="badge bg-white/90 text-ink">{{ case.sector }}</span>{% if case.is_example %}<span class="badge badge-example">Exemple illustratif</span>{% endif %}</div>
+    <div class="absolute left-4 top-4 flex gap-2"><span class="badge bg-white/90 text-white">{{ case.sector }}</span>{% if case.is_example %}<span class="badge badge-example">Exemple illustratif</span>{% endif %}</div>
   </div>
   <div class="flex flex-1 flex-col p-6">
     <h3 class="text-lg font-semibold"><a href="{{ case.get_absolute_url }}" class="after:absolute after:inset-0">{{ case.title }}</a></h3>
-    <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-600">{{ case.summary }}</p>
+    <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-400">{{ case.summary }}</p>
     {% if case.technologies %}<div class="mt-4 flex flex-wrap gap-1.5">{% for tech in case.technologies|split_csv|slice:":4" %}<span class="chip">{{ tech }}</span>{% endfor %}</div>{% endif %}
   </div>
 </article>

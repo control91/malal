@@ -107,6 +107,7 @@ HOME_SECTIONS = [
      "subtitle": "Des solutions Cloud, des logiciels SaaS et des technologies d'Intelligence Artificielle conçus pour accélérer la transformation numérique des entreprises africaines.",
      "cta_label": "Découvrir nos solutions", "cta_url": "/solutions/", "cta2_label": "Contacter un expert", "cta2_url": "/contact/",
      "items": [("map-pin", "Équipe basée à Conakry"), ("languages", "Accompagnement en français"), ("shield-check", "Sécurité dès la conception"), ("receipt", "Offres transparentes")]},
+    {"kind": "marquee", "limit": 12},
     {"kind": "domains", "eyebrow": "Nos domaines d'expertise", "title": "Une expertise complète, de l'infrastructure à l'IA",
      "subtitle": "Six domaines complémentaires pour accompagner chaque étape de votre transformation numérique."},
     {"kind": "solutions", "theme": "muted", "eyebrow": "Nos solutions", "title": "Des solutions prêtes à déployer",

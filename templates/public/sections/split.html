@@ -6,7 +6,7 @@
       {% if section.items.all %}
       <ul class="mt-8 space-y-4" data-reveal>
         {% for item in section.items.all %}
-        <li class="flex gap-4"><span class="icon-tile size-10 rounded-xl">{% icon item.icon|default:"check" "size-5" %}</span><span><span class="block font-semibold text-ink {% if section.theme == 'dark' %}!text-white{% endif %}">{{ item.title }}</span>{% if item.text %}<span class="mt-1 block text-sm text-slate-500">{{ item.text }}</span>{% endif %}</span></li>
+        <li class="flex gap-4"><span class="icon-tile size-10 rounded-xl">{% icon item.icon|default:"check" "size-5" %}</span><span><span class="block font-semibold text-white {% if section.theme == 'dark' %}!text-white{% endif %}">{{ item.title }}</span>{% if item.text %}<span class="mt-1 block text-sm text-slate-500">{{ item.text }}</span>{% endif %}</span></li>
         {% endfor %}
       </ul>
       {% endif %}

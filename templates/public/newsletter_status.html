@@ -2,12 +2,12 @@
 {% block content %}
 <section class="section"><div class="container-x max-w-xl text-center">
   {% if state == "confirmed" %}
-    <span class="mx-auto grid size-16 place-items-center rounded-full bg-emerald-50 text-emerald-600">{% icon "mail-open" "size-8" %}</span>
-    <h1 class="mt-6 font-display text-3xl font-bold">Inscription confirmée</h1><p class="mt-4 text-slate-600">Merci ! Vous recevrez notre prochaine newsletter à l'adresse {{ subscriber.email }}.</p>
+    <span class="mx-auto grid size-16 place-items-center rounded-full bg-emerald-400/10 text-emerald-600">{% icon "mail-open" "size-8" %}</span>
+    <h1 class="mt-6 font-display text-3xl font-bold">Inscription confirmée</h1><p class="mt-4 text-slate-400">Merci ! Vous recevrez notre prochaine newsletter à l'adresse {{ subscriber.email }}.</p>
   {% elif state == "unsubscribed" %}
-    <h1 class="font-display text-3xl font-bold">Vous êtes désinscrit(e)</h1><p class="mt-4 text-slate-600">Vous ne recevrez plus nos emails. Vous pouvez vous réinscrire à tout moment.</p>
+    <h1 class="font-display text-3xl font-bold">Vous êtes désinscrit(e)</h1><p class="mt-4 text-slate-400">Vous ne recevrez plus nos emails. Vous pouvez vous réinscrire à tout moment.</p>
   {% else %}
-    <h1 class="font-display text-3xl font-bold">Se désinscrire de la newsletter</h1><p class="mt-4 text-slate-600">Confirmez-vous la désinscription de {{ subscriber.email }} ?</p>
+    <h1 class="font-display text-3xl font-bold">Se désinscrire de la newsletter</h1><p class="mt-4 text-slate-400">Confirmez-vous la désinscription de {{ subscriber.email }} ?</p>
     <form method="post" class="mt-6">{% csrf_token %}<button class="btn btn-primary">Confirmer la désinscription</button></form>
   {% endif %}
   <a href="/" class="link-arrow mt-8">Retour à l'accueil {% icon "arrow-right" "size-4" %}</a>

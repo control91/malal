@@ -25,7 +25,8 @@ Chaque section a un *type* qui détermine sa mise en forme :
 
 | Type | Contenu |
 | --- | --- |
-| Hero | grand bandeau : sur-titre, titre, sous-titre, 2 boutons, points clés (éléments) |
+| Hero | grand bandeau : sur-titre, titre, sous-titre, bouton principal, bouton rond (bouton secondaire), points clés (éléments) ; le nom de l'entreprise s'affiche en très grand en bas |
+| Bandeau défilant | fait défiler les domaines d'expertise publiés |
 | Domaines / Solutions / Actualités / Équipe / Partenaires / Témoignages / Réalisations / FAQ | se remplissent **automatiquement** avec les contenus publiés |
 | Grille d'éléments | cartes icône + titre + texte (éléments) |
 | Vision Afrique | carte interactive ; les 3 premiers éléments sont les étapes |
