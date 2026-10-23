@@ -4,3 +4,4 @@ pytest-django>=4.14,<5
 factory-boy>=3.3,<4
 ruff>=0.17
 gunicorn>=26,<27
+watchfiles>=1.0,<2          # restarts the Celery worker on code changes (Docker dev)

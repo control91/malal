@@ -18,12 +18,20 @@ mini-CRM et back-office sur mesure, pour une entreprise technologique basée à 
 
 Aucune ressource tierce n'est chargée par le navigateur (pas de CDN, pas de Google Fonts, pas de traceur).
 
-## Démarrage rapide (développement)
+## Démarrage rapide avec Docker
+
+```bash
+make up                            # site :8000, back-office :8000/dashboard/, emails :8025
+make seed                          # (2e terminal) contenu + données d'exemple
+make admin email=vous@example.com
+```
+
+## Démarrage rapide sans Docker
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements/dev.txt
 npm install && npm run build          # Tailwind + bibliothèques JS/polices/icônes
-createdb malal                        # ou: docker compose -f docker-compose.dev.yml up -d
+createdb malal                        # ou: docker compose -f docker-compose.dev.yml up -d db redis
 .venv/bin/python manage.py migrate
 .venv/bin/python manage.py seed_demo --with-users   # contenu de base + données d'EXEMPLE
 .venv/bin/python manage.py create_admin --email vous@entreprise.gn

@@ -1,13 +1,86 @@
-# Local services only (Postgres + Redis); run Django with `python manage.py runserver`.
+# Full development stack in Docker (Django included), with live reload.
+#
+#   docker compose -f docker-compose.dev.yml up --build      # or: make up
+#
+#   Site ............ http://localhost:8000
+#   Back-office ..... http://localhost:8000/dashboard/
+#   Emails (Mailpit)  http://localhost:8025
+#
+# Services only (Django run on the host): docker compose -f docker-compose.dev.yml up -d db redis
 name: malal-dev
+
+x-django: &django
+  build:
+    context: .
+    dockerfile: docker/dev.Dockerfile
+  volumes:
+    - .:/app
+    - media-dev:/app/media
+  environment: &django-env
+    DJANGO_SETTINGS_MODULE: config.settings.dev
+    DJANGO_DEBUG: "true"
+    DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,0.0.0.0,web
+    SITE_URL: http://localhost:${DEV_PORT:-8000}
+    DATABASE_URL: postgres://malal:malal@db:5432/malal
+    REDIS_URL: redis://redis:6379/0
+    CELERY_BROKER_URL: redis://redis:6379/1
+    CELERY_TASK_ALWAYS_EAGER: "false"
+    EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
+    EMAIL_HOST: mailpit
+    EMAIL_PORT: "1025"
+    EMAIL_USE_TLS: "false"
+    MEDIA_ROOT: /app/media
+  depends_on:
+    db: { condition: service_healthy }
+    redis: { condition: service_healthy }
+
 services:
+  web:
+    <<: *django
+    environment:
+      <<: *django-env
+      RUN_MIGRATIONS: "1"
+    ports: ["${DEV_PORT:-8000}:8000"]
+
+  worker:
+    <<: *django
+    command: ["watchfiles", "--filter", "python", "celery -A config worker --loglevel=INFO --concurrency=2", "apps", "config"]
+
+  assets:
+    image: node:22-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+      # Linux node_modules kept apart from the host's (native binaries differ).
+      - node-modules-dev:/app/node_modules
+    # Vendored libraries/icons are committed: only Tailwind is rebuilt here.
+    # After upgrading a JS dependency, run `npm run vendor` on the host.
+    command: sh -c "npm ci --no-audit --no-fund && npm run watch:css"
+    tty: true
+
   db:
     image: postgres:17-alpine
     environment: { POSTGRES_DB: malal, POSTGRES_USER: malal, POSTGRES_PASSWORD: malal }
-    ports: ["5433:5432"]
+    ports: ["${DEV_DB_PORT:-55432}:5432"]
     volumes: [pgdata-dev:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U malal -d malal"]
+      interval: 3s
+      retries: 20
+
   redis:
     image: redis:7-alpine
-    ports: ["6380:6379"]
+    ports: ["${DEV_REDIS_PORT:-56379}:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      retries: 20
+
+  mailpit:
+    image: axllent/mailpit:v1.27
+    ports: ["${DEV_MAIL_PORT:-8025}:8025"]
+
 volumes:
   pgdata-dev:
+  media-dev:
+  node-modules-dev:
