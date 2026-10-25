@@ -1,4 +1,0 @@
-{% extends "errors/_layout.html" %}
-{% block title %}Accès refusé · {{ site.company_name }}{% endblock %}
-{% block code %}403{% endblock %}{% block heading %}Accès refusé{% endblock %}
-{% block text %}Vous n'avez pas les droits nécessaires pour accéder à cette page.{% if user.is_staff %} <a href="/dashboard/" class="underline">Retour au tableau de bord</a>.{% endif %}{% endblock %}

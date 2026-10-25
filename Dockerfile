@@ -1,42 +1,52 @@
 # syntax=docker/dockerfile:1.7
 
-# ---- 1. Front-end assets (Tailwind build + vendored JS/fonts/icons) ----------
+# ---- 1. PHP dependencies ----------------------------------------------------
+FROM composer:2 AS vendor
+WORKDIR /app
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --no-interaction --ignore-platform-reqs
+COPY . .
+RUN composer dump-autoload --optimize --classmap-authoritative --no-dev
+
+# ---- 2. Front-end build (client + SSR bundles) ------------------------------
 FROM node:22-alpine AS assets
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
-COPY assets ./assets
-COPY scripts/vendor.mjs ./scripts/vendor.mjs
-COPY apps ./apps
-COPY templates ./templates
-COPY static ./static
+COPY . .
+COPY --from=vendor /app/vendor/tightenco/ziggy ./vendor/tightenco/ziggy
 RUN npm run build
 
-# ---- 2. Python runtime ---------------------------------------------------------
-FROM python:3.13-slim AS runtime
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1 \
-    DJANGO_SETTINGS_MODULE=config.settings.prod
+# ---- 3. SSR server (Node) ---------------------------------------------------
+FROM node:22-alpine AS ssr
 WORKDIR /app
+ENV NODE_ENV=production
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev --no-audit --no-fund
+COPY --from=assets /app/bootstrap/ssr ./bootstrap/ssr
+COPY --from=vendor /app/vendor/tightenco/ziggy ./vendor/tightenco/ziggy
+USER node
+EXPOSE 13714
+CMD ["node", "bootstrap/ssr/ssr.js"]
 
-RUN apt-get update && apt-get install -y --no-install-recommends libpq5 curl \
-    && rm -rf /var/lib/apt/lists/* \
-    && groupadd --system app && useradd --system --gid app --home /app app
+# ---- 4. PHP-FPM runtime -----------------------------------------------------
+FROM php:8.4-fpm-alpine AS app
+COPY --from=mlocati/php-extension-installer:2 /usr/bin/install-php-extensions /usr/local/bin/
+RUN install-php-extensions pdo_pgsql redis gd intl zip bcmath opcache pcntl
+COPY docker/php.ini /usr/local/etc/php/conf.d/zz-app.ini
+WORKDIR /var/www/html
+COPY --chown=www-data:www-data . .
+COPY --from=vendor --chown=www-data:www-data /app/vendor ./vendor
+COPY --from=assets --chown=www-data:www-data /app/public/build ./public/build
+RUN rm -rf node_modules tests .env && mkdir -p storage/app/public storage/framework/cache storage/framework/sessions storage/framework/views storage/logs \
+    && chown -R www-data:www-data storage bootstrap/cache
+USER www-data
+EXPOSE 9000
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s CMD php-fpm -t >/dev/null 2>&1 || exit 1
+ENTRYPOINT ["/var/www/html/docker/entrypoint.sh"]
+CMD ["php-fpm"]
 
-COPY requirements ./requirements
-RUN pip install -r requirements/prod.txt
-
-COPY --chown=app:app . .
-COPY --from=assets --chown=app:app /app/static ./static
-
-# collectstatic needs a syntactically valid key only at build time.
-RUN DJANGO_SECRET_KEY=build-only-$(head -c 48 /dev/urandom | base64 | tr -d '\n/+=') \
-    DATABASE_URL=sqlite:////tmp/build.db python manage.py collectstatic --noinput \
-    && mkdir -p /app/media && chown -R app:app /app/media /app/staticfiles
-
-USER app
-EXPOSE 8000
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 CMD curl -fsS -H "X-Forwarded-Proto: https" http://127.0.0.1:8000/health/ || exit 1
-ENTRYPOINT ["/app/docker/entrypoint.sh"]
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3", "--threads", "2", "--timeout", "60", "--access-logfile", "-", "--forwarded-allow-ips", "*"]
+# ---- 5. Nginx with the public assets ------------------------------------------
+FROM nginx:1.27-alpine AS web
+COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=app /var/www/html/public /var/www/html/public

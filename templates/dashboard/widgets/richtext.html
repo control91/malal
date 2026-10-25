@@ -1,4 +1,0 @@
-<div class="rounded-xl">
-  <input type="hidden" name="{{ widget.name }}" id="{{ widget.attrs.id }}" value="{{ widget.value|default_if_none:'' }}">
-  <trix-editor input="{{ widget.attrs.id }}" class="trix-content prose prose-sm max-w-none" {% if widget.attrs.disabled %}contenteditable="false"{% endif %}></trix-editor>
-</div>

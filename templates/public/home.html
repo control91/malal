@@ -1,9 +1,0 @@
-{% extends "public/base.html" %}
-{% block content %}
-  {% for section in sections %}{% include section.template_name %}{% empty %}
-  <section class="dark-zone"><div class="container-x py-32 text-center">
-    <h1 class="h-display">{{ site.company_name }}</h1><p class="lead mx-auto mt-6 max-w-xl">{{ site.tagline }}</p>
-    {% if user.is_staff %}<p class="mt-8 text-sm text-slate-400">La page d'accueil n'a pas encore de contenu : lancez <code>python manage.py seed_site</code> ou éditez-la depuis le tableau de bord.</p>{% endif %}
-  </div></section>
-  {% endfor %}
-{% endblock %}

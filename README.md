@@ -1,57 +1,56 @@
 # MALAL — Plateforme institutionnelle Cloud, SaaS & IA
 
-Site institutionnel premium, CMS, catalogue de solutions, tarifs, blog, réalisations,
-mini-CRM et back-office sur mesure, pour une entreprise technologique basée à Conakry.
+Site institutionnel, CMS, catalogue de solutions, tarifs, blog, réalisations, mini-CRM et
+back-office sur mesure, pour une entreprise technologique basée à Conakry.
 
-> Le nom « MALAL » est la valeur par défaut : il se change dans
-> **Tableau de bord → Configuration** (comme le logo, les couleurs et les coordonnées).
+> Le nom « MALAL », le logo et les couleurs se changent dans **Back-office → Configuration**.
 
 ## Stack
 
 | Couche | Choix |
 | --- | --- |
-| Backend | Python 3.12+, Django 5.2 LTS, PostgreSQL 17, Django REST Framework (API publique en lecture seule) |
-| Tâches asynchrones | Celery + Redis (emails) — exécution synchrone automatique si Redis est absent |
-| Frontend | Templates Django, Tailwind CSS v4, Alpine.js, htmx, icônes Lucide (inline), polices auto-hébergées : Jost & Russo One (site public, thème sombre), Inter & Manrope (back-office) |
-| Sécurité | django-axes (limitation des connexions), django-csp, anti-spam maison, nh3 (assainissement HTML) |
-| Livraison | Docker multi-stage, Gunicorn, WhiteNoise, Nginx, Docker Compose |
+| Backend | PHP 8.4+, **Laravel 12**, PostgreSQL 17, Redis (cache, sessions, files d'attente) |
+| Frontend | **Vue 3** + **Inertia 2** (rendu serveur SSR pour le site public), Vite 7, Tailwind CSS 4, Tiptap (éditeur) |
+| Sécurité | CSP stricte (spatie/laravel-csp), HTMLPurifier, limitation des connexions et des formulaires, audit |
+| Livraison | Docker multi-stage (PHP-FPM, Nginx, serveur SSR Node), Docker Compose |
+| Tests | Pest 3 (75 tests) |
 
 Aucune ressource tierce n'est chargée par le navigateur (pas de CDN, pas de Google Fonts, pas de traceur).
 
 ## Démarrage rapide avec Docker
 
 ```bash
-make up                            # site :8000, back-office :8000/dashboard/, emails :8025
-make seed                          # (2e terminal) contenu + données d'exemple
-make admin email=vous@example.com
+make up                            # site :8000, back-office :8000/admin, emails :8025
+make seed                          # (2e terminal) contenu + données d'exemple + un compte par rôle
+make admin email=vous@example.com  # super administrateur (mot de passe demandé)
 ```
 
 ## Démarrage rapide sans Docker
 
 ```bash
-python3 -m venv .venv && .venv/bin/pip install -r requirements/dev.txt
-npm install && npm run build          # Tailwind + bibliothèques JS/polices/icônes
-createdb malal                        # ou: docker compose -f docker-compose.dev.yml up -d db redis
-.venv/bin/python manage.py migrate
-.venv/bin/python manage.py seed_demo --with-users   # contenu de base + données d'EXEMPLE
-.venv/bin/python manage.py create_admin --email vous@entreprise.gn
-.venv/bin/python manage.py runserver
+composer install && npm install
+cp .env.example .env && php artisan key:generate   # puis adapter DB_*, APP_ENV=local, APP_DEBUG=true
+createdb malal
+php artisan migrate
+php artisan app:seed-demo --with-users
+php artisan app:create-admin --email=vous@entreprise.gn
+composer run dev        # serveur PHP + Vite + file d'attente
 ```
 
 - Site public : http://localhost:8000
-- Back-office : http://localhost:8000/dashboard/
-- Administration de secours : http://localhost:8000/django-admin/ (chemin configurable)
+- Back-office : http://localhost:8000/admin
 
 ## Tests et qualité
 
 ```bash
-.venv/bin/python -m pytest      # 79 tests : pages, formulaires, anti-spam, permissions, audit, uploads, commandes
-.venv/bin/ruff check .
+createdb malal_laravel_test
+./vendor/bin/pest           # pages, formulaires, anti-spam, permissions par rôle, audit, uploads, commandes
+./vendor/bin/pint --test    # style de code
 ```
 
 ## Documentation
 
-- [docs/INSTALLATION.md](docs/INSTALLATION.md) — installation détaillée et variables d'environnement
-- [docs/DEPLOIEMENT.md](docs/DEPLOIEMENT.md) — mise en production Docker, HTTPS, sauvegardes
+- [docs/INSTALLATION.md](docs/INSTALLATION.md) — installation détaillée, Docker, variables d'environnement
+- [docs/DEPLOIEMENT.md](docs/DEPLOIEMENT.md) — mise en production, HTTPS, sauvegardes, SSR
 - [docs/ADMINISTRATION.md](docs/ADMINISTRATION.md) — guide du back-office pour les équipes
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — modules, modèles, sécurité, évolutions prévues et limites connues
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — modules, sécurité, évolutions prévues et limites connues

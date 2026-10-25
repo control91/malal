@@ -1,5 +1,0 @@
-{# Honeypot + signed timestamp (see apps/core/antispam.py). #}
-<div class="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
-  <label>Laissez ce champ vide <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
-</div>
-<input type="hidden" name="form_ts" value="{{ form.form_ts.value|default:antispam_ts }}">

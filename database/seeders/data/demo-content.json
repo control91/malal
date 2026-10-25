@@ -1,0 +1,155 @@
+{
+  "products": [
+    {
+      "category": "saas",
+      "slug": "gestion-commerciale",
+      "name": "Exemple Ventes",
+      "icon": "shopping-cart",
+      "tagline": "La gestion commerciale simplifiée pour les PME",
+      "summary": "Devis, factures, stocks et suivi des paiements (y compris mobile money) dans un seul outil en ligne.",
+      "status": "available",
+      "features": [
+        {
+          "icon": "receipt",
+          "title": "Devis et factures",
+          "description": "Création en quelques clics, envoi par email ou WhatsApp."
+        },
+        {
+          "icon": "boxes",
+          "title": "Stocks",
+          "description": "Suivi des entrées, sorties et alertes de réapprovisionnement."
+        },
+        {
+          "icon": "wallet",
+          "title": "Paiements",
+          "description": "Rapprochement des paiements, y compris mobile money."
+        },
+        {
+          "icon": "chart-bar",
+          "title": "Tableaux de bord",
+          "description": "Chiffre d'affaires et impayés en temps réel."
+        }
+      ]
+    },
+    {
+      "category": "saas",
+      "slug": "gestion-rh",
+      "name": "Exemple RH",
+      "icon": "users",
+      "tagline": "Les ressources humaines sans paperasse",
+      "summary": "Dossiers du personnel, congés, présences et préparation de la paie.",
+      "status": "beta",
+      "features": [
+        {
+          "icon": "contact",
+          "title": "Dossiers salariés",
+          "description": "Centralisation sécurisée des informations."
+        },
+        {
+          "icon": "calendar",
+          "title": "Congés et absences",
+          "description": "Demandes et validations en ligne."
+        },
+        {
+          "icon": "clock",
+          "title": "Présences",
+          "description": "Pointage simple, y compris sur mobile."
+        }
+      ]
+    },
+    {
+      "category": "intelligence-artificielle",
+      "slug": "assistant-documentaire",
+      "name": "Exemple Assistant",
+      "icon": "bot",
+      "tagline": "Un assistant qui répond à partir de vos documents",
+      "summary": "Posez vos questions en français : l'assistant cherche la réponse dans vos procédures, contrats et notes internes.",
+      "status": "beta",
+      "features": [
+        {
+          "icon": "file-search",
+          "title": "Recherche intelligente",
+          "description": "Réponses sourcées à partir de vos documents."
+        },
+        {
+          "icon": "lock",
+          "title": "Confidentialité",
+          "description": "Accès restreint par utilisateur et par dossier."
+        },
+        {
+          "icon": "languages",
+          "title": "Multilingue",
+          "description": "Français et anglais, autres langues à l'étude."
+        }
+      ]
+    },
+    {
+      "category": "cloud-computing",
+      "slug": "hebergement-applications",
+      "name": "Exemple Hébergement",
+      "icon": "cloud",
+      "tagline": "Votre application en ligne, administrée",
+      "summary": "Hébergement d'applications web et Docker avec sauvegardes, certificats et supervision.",
+      "status": "available",
+      "features": [
+        {
+          "icon": "container",
+          "title": "Docker et frameworks",
+          "description": "Django, Laravel, Node.js ou vos propres images."
+        },
+        {
+          "icon": "database-backup",
+          "title": "Sauvegardes",
+          "description": "Sauvegardes régulières et restauration accompagnée."
+        },
+        {
+          "icon": "shield-check",
+          "title": "TLS inclus",
+          "description": "Certificats HTTPS gérés automatiquement."
+        }
+      ]
+    },
+    {
+      "category": "intelligence-artificielle",
+      "slug": "api-ia",
+      "name": "Exemple API IA",
+      "icon": "webhook",
+      "tagline": "Des API d'IA pour les développeurs",
+      "summary": "Classification de textes, extraction d'informations et transcription, accessibles par API.",
+      "status": "coming_soon",
+      "features": [
+        {
+          "icon": "code",
+          "title": "API REST",
+          "description": "Documentation et exemples."
+        },
+        {
+          "icon": "zap",
+          "title": "Paiement à l'usage",
+          "description": "Facturation simple au volume."
+        }
+      ]
+    }
+  ],
+  "articles": [
+    {
+      "slug": "comment-choisir-hebergement-application",
+      "title": "Comment choisir l'hébergement de son application ?",
+      "category": "guides",
+      "excerpt": "Mutualisé, VPS, conteneurs, plateforme administrée : les critères pour faire le bon choix."
+    },
+    {
+      "slug": "ia-pme-par-ou-commencer",
+      "title": "Intelligence artificielle en PME : par où commencer ?",
+      "category": "ia",
+      "excerpt": "Identifier un premier cas d'usage utile, mesurer son intérêt et maîtriser les risques."
+    },
+    {
+      "slug": "sauvegardes-regle-3-2-1",
+      "title": "Sauvegardes : comprendre la règle 3-2-1",
+      "category": "cloud",
+      "excerpt": "Trois copies, deux supports, une copie hors site : une règle simple pour protéger vos données."
+    }
+  ],
+  "body": "<p>Article d'exemple destiné à illustrer la mise en page du blog. Remplacez-le par vos propres contenus.</p>\n<h2>Le contexte</h2><p>Chaque organisation a des contraintes propres : budget, compétences internes, qualité de la connexion, exigences réglementaires.</p>\n<h2>Les critères à examiner</h2><ul><li>La disponibilité attendue et le coût d'une interruption.</li><li>La localisation et la protection des données.</li><li>La capacité à évoluer avec votre activité.</li><li>La qualité de l'accompagnement.</li></ul>\n<blockquote>Le bon choix est celui que votre équipe saura exploiter au quotidien.</blockquote>\n<h2>En résumé</h2><p>Commencez petit, mesurez, puis faites évoluer votre solution.</p>"
+}

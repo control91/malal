@@ -1,20 +1,11 @@
 #!/bin/sh
 set -e
-# Waits for PostgreSQL, then applies migrations (web container only).
-python - <<'PY'
-import os, time
-import psycopg
-url = os.environ["DATABASE_URL"]
-for attempt in range(30):
-    try:
-        psycopg.connect(url, connect_timeout=2).close()
-        break
-    except psycopg.OperationalError:
-        time.sleep(1)
-else:
-    raise SystemExit("PostgreSQL is not reachable")
-PY
+[ -f vendor/autoload.php ] || composer install --no-interaction
+[ -f .env ] || { cp .env.example .env; php artisan key:generate --force; }
+# Wait for PostgreSQL, then migrate (web container only).
+until php -r "new PDO('pgsql:host=${DB_HOST};port=5432;dbname=${DB_DATABASE}', '${DB_USERNAME}', '${DB_PASSWORD}');" 2>/dev/null; do sleep 1; done
 if [ "${RUN_MIGRATIONS:-0}" = "1" ]; then
-  python manage.py migrate --noinput
+  php artisan migrate --force
+  php artisan storage:link --quiet 2>/dev/null || true
 fi
 exec "$@"

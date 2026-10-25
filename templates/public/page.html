@@ -1,7 +1,0 @@
-{% extends "public/base.html" %}
-{% block content %}
-  {% include "public/includes/page_header.html" with eyebrow=page.eyebrow title=page.title subtitle=page.intro %}
-  {% if page.status != "published" %}<div class="container-x mt-6"><div class="alert alert-warning">{% icon "eye" "size-4" %} Aperçu : cette page n'est pas publiée.</div></div>{% endif %}
-  {% if page.body %}<section class="section-sm"><div class="container-x max-w-3xl prose-brand prose-lg">{{ page.body|safe }}</div></section>{% endif %}
-  {% for section in sections %}{% include section.template_name %}{% endfor %}
-{% endblock %}

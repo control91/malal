@@ -1,115 +1,113 @@
 # Architecture technique
 
-## Découpage
+## Vue d'ensemble
+
+Laravel 12 sert à la fois le site public et le back-office. Les pages sont des composants Vue 3
+rendus via Inertia : pas d'API à maintenir entre le front et le back, la navigation est instantanée,
+et le site public est rendu côté serveur (SSR) pour le référencement et les connexions modestes.
 
 ```
-config/            settings (base/dev/test/prod), urls, celery, wsgi
-apps/
-  core/            SiteSettings (singleton), modèles abstraits, champs (image optimisée, texte riche assaini),
-                   validateurs d'upload, anti-spam, SEO/JSON-LD, sitemaps, middlewares, commandes
-  accounts/        User (connexion par email) + rôles/capacités (roles.py)
-  audit/           AuditLog + signaux de connexion + services.record()
-  cms/             Page, PageSection, SectionItem, NavigationMenu/Item, FAQ, TeamMember, Partner, JobOpening, MediaAsset
-  services/        ServiceCategory (domaines), Service, StatusComponent
-  products/        Product, ProductFeature, ProductScreenshot
-  pricing/         PricingGroup, PricingPlan, PricingFeature, PricingOption
-  blog/            BlogArticle (publication différée), BlogCategory, BlogTag
-  portfolio/       CaseStudy (+ galerie), Testimonial — publication conditionnée au consentement
-  crm/             Inquiry (contact/devis/démo/…), Lead, Activity, NewsletterSubscriber + formulaires publics
-  notifications/   Notification in-app, tâche Celery d'envoi d'email
-  analytics/       compteurs journaliers sans cookie (middleware)
-  dashboard/       back-office : moteur CRUD déclaratif (crud.py), ressources (resources.py), écrans CRM
-  api/             API REST publique v1 en lecture seule + schéma OpenAPI (/api/schema/)
-templates/public | dashboard | accounts | emails | errors
-assets/css/main.css   design system Tailwind (tokens de marque = variables CSS)
+app/
+  Admin/            moteur du back-office : Field (schéma + validation), Resource, Repeater, Registry
+    Resources/      une classe par contenu administrable (pages, solutions, articles, prospects…)
+  Console/Commands/ app:create-admin, app:seed-site, app:seed-demo
+  Enums/            statuts et rôles (Availability, PublishStatus, LeadStatus, Role…)
+  Http/
+    Controllers/Site/   site public (pages, domaines, catalogue, blog, formulaires…)
+    Controllers/Admin/  écrans spécifiques (tableau de bord, demandes, CRM, paramètres) + ResourceController générique
+    Controllers/Api/V1/ API publique en lecture seule
+    Middleware/         Inertia (données partagées), en-têtes de sécurité, statistiques, liste blanche IP
+    Requests/           validation des formulaires publics (anti-spam inclus)
+  Models/           Eloquent (+ traits Ordered, SanitizesRichText)
+  Services/         InquiryService (demande → prospect → notifications), Notifier, SectionLoader, Stats
+  Support/          Capabilities (rôles), Audit, Images (WebP), AntiSpam, Seo, Present, Csp/AppPolicy
+database/
+  migrations/       schéma complet
+  seeders/          SiteContentSeeder, DemoSeeder (+ data/*.json)
+resources/
+  css/app.css       design system Tailwind (thème sombre public scopé sur body.site)
+  js/
+    Pages/Site|Admin|Auth   pages Inertia
+    Components/Sections     un composant par type de section du CMS
+    Components/Site|Admin|Ui
+    Layouts/                SiteLayout, AdminLayout (chargé à la demande), AuthLayout
+    ssr.js / app.js         points d'entrée SSR et navigateur
+  views/app.blade.php        gabarit racine : métadonnées SEO et JSON-LD rendus par le serveur
+routes/web.php, api.php
+tests/Feature/      Pest
 ```
 
-### Simplifications assumées
+## Back-office déclaratif
 
-- `ContactSubmission`, `DemoRequest` et `QuoteRequest` sont un seul modèle **`Inquiry`** avec un
-  champ `kind` : une seule boîte de réception, un seul export, un seul workflow.
-- `LeadActivity` est **`Activity`**, partagée par les prospects et les demandes (historique unifié).
-- Les apps `leads` et `crm` suggérées sont fusionnées dans `crm`.
-
-## Back-office
-
-`apps/dashboard/crud.py` génère liste (recherche, filtres, tri, pagination htmx), création,
-édition (avec formulaires imbriqués : fonctionnalités, éléments de section, caractéristiques…),
-suppression (modale de confirmation), publication en un clic et export CSV (protégé contre
-l'injection de formules) à partir d'une déclaration `Resource`. Toute écriture est enregistrée
-dans l'audit avec les champs modifiés. Ajouter un modèle au back-office = déclarer une `Resource`.
+Chaque contenu est décrit par une classe `App\Admin\Resources\*Resource` : colonnes de la liste,
+filtres, recherche, champs groupés (`Field::text()->required()->max(200)` produit à la fois le
+schéma du formulaire Vue et les règles de validation Laravel), relations éditables en ligne
+(`Repeater`), champ de publication, export CSV. `ResourceController` fournit liste, création,
+édition, suppression, publication et export pour toutes les ressources, avec audit automatique des
+champs modifiés. Ajouter un contenu au back-office = créer une Resource et l'inscrire dans
+`App\Admin\Registry`.
 
 ## Contrôle d'accès
 
-`apps/accounts/roles.py` associe chaque rôle à des capacités `<zone>.view` / `<zone>.edit`.
-Chaque vue déclare sa capacité (`capability_required`) ; les formulaires en lecture seule sont
-désactivés côté serveur et tout POST sans `edit` renvoie 403. Le menu latéral n'est qu'un reflet.
-Tests : `tests/test_dashboard.py::test_role_access_matrix`.
+`App\Support\Capabilities` associe chaque rôle à des capacités `<zone>.view` / `<zone>.edit`.
+Un `Gate::before` les résout ; les routes déclarent `can:<capacité>` et le contrôleur générique
+vérifie la capacité de la ressource à chaque action. Le menu n'est qu'un reflet de ces droits.
+
+| Rôle | Peut modifier | Peut consulter |
+| --- | --- | --- |
+| Super administrateur / Administrateur | tout (l'admin ne peut pas toucher aux super administrateurs) | tout |
+| Éditeur | contenus, catalogue, articles, réalisations, médias | statistiques |
+| Commercial | demandes, prospects, newsletter | catalogue, statistiques |
+| Support | demandes | prospects, catalogue |
+| Lecteur | rien | tout sauf utilisateurs, configuration, audit |
 
 ## Sécurité
 
 | Mesure | Implémentation |
 | --- | --- |
-| CSRF, XSS | protections Django ; HTML riche assaini par `nh3` à l'enregistrement (`RichTextField`) ; JSON-LD échappé |
-| CSP | `django-csp` : scripts locaux + nonce uniquement (`'unsafe-eval'` requis par Alpine.js), `frame-ancestors 'none'` |
-| En-têtes | X-Frame-Options DENY, nosniff, Referrer-Policy, COOP, HSTS (prod) |
-| Connexion | django-axes (5 échecs / 30 min par identifiant + IP), mots de passe ≥ 12 caractères, cookies `__Host-` sécurisés |
-| Uploads | extension + taille + contenu réel (Pillow, signature PDF/Office, SVG filtré), images recompressées en WebP sans métadonnées |
-| Formulaires publics | pot de miel, horodatage signé (délai minimum), limitation par IP, consentement horodaté |
-| Back-office | URL d'admin de secours configurable, liste blanche d'IP optionnelle, audit |
-| Secrets | uniquement via variables d'environnement ; la prod refuse une clé faible |
+| CSRF, XSS | protections Laravel/Inertia ; HTML riche nettoyé par HTMLPurifier à chaque enregistrement ; JSON-LD échappé |
+| CSP | `App\Support\Csp\AppPolicy` : scripts locaux + nonce, **sans `unsafe-eval`** (templates Vue compilés au build), `frame-ancestors 'none'` |
+| En-têtes | X-Frame-Options, nosniff, Referrer-Policy, COOP, Permissions-Policy, HSTS en HTTPS, X-Request-ID |
+| Connexion | 5 échecs par (email, IP) → blocage 30 min ; mots de passe ≥ 12 caractères ; comptes désactivés déconnectés |
+| Uploads | type réel vérifié (MIME), taille, SVG filtré ; images redimensionnées et recompressées en WebP |
+| Formulaires publics | pot de miel, horodatage chiffré (délai minimum), limitation par IP, consentement horodaté |
+| Back-office | liste blanche d'IP optionnelle, audit des opérations sensibles, export CSV protégé |
+| Données exposées | les pages ne reçoivent que des tableaux préparés (`Support\Present`), la liste des routes publiques est restreinte |
 
 ## SEO et performance
 
-URLs propres en français, slugs, meta title/description et image Open Graph par contenu,
-canonical, Twitter Cards, JSON-LD (Organization, WebSite, BreadcrumbList, Service,
-SoftwareApplication, BlogPosting, FAQPage, JobPosting), `sitemap.xml`, `robots.txt`.
-Polices auto-hébergées et préchargées, CSS unique minifié (~140 Ko, ~20 Ko compressé),
-JavaScript minimal différé, images WebP redimensionnées avec `loading="lazy"`, illustrations en SVG,
-cache des paramètres et menus. Aucun score Lighthouse n'a été mesuré à ce stade.
+Titre, description, canonical, Open Graph, Twitter Cards et JSON-LD (Organization, WebSite,
+BreadcrumbList, Service, SoftwareApplication, BlogPosting, FAQPage, JobPosting) sont rendus par
+`app.blade.php`, même sans SSR. `sitemap.xml` et `robots.txt` sont générés. Le rendu serveur
+fournit le HTML complet. Le code du back-office et l'éditeur ne sont jamais téléchargés par les
+visiteurs (découpage par page, layouts chargés à la demande). Polices auto-hébergées et préchargées,
+images WebP avec `loading="lazy"`. Aucun score Lighthouse n'a été mesuré.
 
 ## Multilingue
 
-- Interface : i18n Django (`LocaleMiddleware`, `i18n_patterns` avec le français sans préfixe ;
-  l'anglais sera servi sous `/en/`). Les gabarits utilisent `{% translate %}` progressivement.
-- Contenus éditoriaux : **stratégie retenue** — ajouter `django-modeltranslation` sur les
-  modèles éditoriaux (champs `title_fr`, `title_en`, …) et un onglet de langue dans les
-  formulaires du back-office. Non activé aujourd'hui : le contenu est en français uniquement.
-- Langues africaines (pular, malinké, soussou…) : même mécanisme, en ajoutant le code à
-  `LANGUAGES` et aux langues actives dans la configuration.
+Interface et contenus en français. L'anglais et les langues africaines s'ajouteront par la
+traduction des chaînes Vue (vue-i18n ou fichiers `lang/`) et, pour les contenus éditoriaux, par des
+colonnes traduites (`spatie/laravel-translatable`) avec un onglet de langue dans les formulaires.
 
 ## Évolution vers l'écosystème Cloud
 
-Séparation prévue :
+1. **Site institutionnel** — ce dépôt (routes publiques).
+2. **Back-office CMS & commercial** — `/admin`.
+3. **Portail client** — futur module ou application distincte réutilisant la table `users`
+   (un type de compte suffit) ou une authentification centralisée (OIDC via Laravel Passport ou un
+   fournisseur dédié comme Keycloak).
+4. **Services techniques** (CloudStack, Coolify, Africa AI Gateway) — services séparés, consommés par
+   API, jamais par le site institutionnel directement.
 
-1. **Site institutionnel** (cette application, apps publiques).
-2. **Back-office CMS & commercial** (`apps/dashboard`).
-3. **Portail client** : nouvelle application (ou service distinct) — abonnements, facturation,
-   tickets. Elle réutilisera la table `accounts.User` (un champ de type de compte suffit),
-   ou une authentification centralisée.
-4. **Services techniques** (CloudStack, Coolify, Africa AI Gateway) : services séparés,
-   jamais appelés directement par le site institutionnel.
-
-Recommandations :
-
-- Authentification centralisée : exposer un fournisseur **OpenID Connect**
-  (`django-oauth-toolkit` sur ce projet, ou Keycloak/Authentik dédié) pour que le portail et
-  les futures applications partagent les identités.
-- API : étendre `apps/api` sous `/api/v1/` (versionnée, documentée par le schéma OpenAPI),
-  avec des permissions DRF par portée.
-- Statut des services : remplacer la saisie manuelle (`StatusComponent`) par une alimentation
-  automatique depuis la supervision.
+L'API publique `/api/v1` (lecture seule, limitée en débit) est le point de départ des intégrations.
 
 ## Limites connues
 
-- Pas de traduction des contenus éditoriaux (voir stratégie ci-dessus) ; seule l'interface est prête.
-- Pas de mode sombre : l'identité combine déjà sections claires et sombres ; un thème sombre
-  complet n'a pas été implémenté plutôt que livré à moitié.
-- Pas de CAPTCHA tiers (choix de confidentialité) ; un service comme Cloudflare Turnstile peut
-  être ajouté si le spam devient significatif.
-- Les candidatures passent par le formulaire de contact (lien vers CV) : pas d'upload de CV,
-  pour éviter de stocker des données personnelles sensibles sans procédure dédiée.
-- L'éditeur riche n'accepte pas l'insertion d'images dans le corps des articles.
-- La page Statut est mise à jour manuellement.
-- Les notifications in-app s'affichent au chargement des pages (pas de temps réel).
+- Contenus en français uniquement (stratégie de traduction ci-dessus).
+- Pas de mode sombre pour le back-office (le site public est sombre par conception).
+- Pas de CAPTCHA tiers (choix de confidentialité) ; Cloudflare Turnstile peut être ajouté si besoin.
+- Candidatures via le formulaire de contact (lien vers CV), sans upload de CV.
+- Pas d'insertion d'images dans le corps des articles (image de couverture et médiathèque).
+- Page Statut mise à jour manuellement ; notifications in-app non temps réel.
+- Pas d'administration de secours type Django Admin : tout passe par le back-office.
 - La carte « Vision » est une représentation stylisée, pas une carte géographique précise.

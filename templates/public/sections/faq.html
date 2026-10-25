@@ -1,8 +1,0 @@
-{% if section.data %}
-<section class="section {{ section|theme_class }}" {% if section.anchor %}id="{{ section.anchor }}"{% endif %}>
-  <div class="container-x">
-    <div class="flex flex-col justify-between gap-6 md:flex-row md:items-end">{% include "public/includes/section_heading.html" with align="left" %}<a href="/faq/" class="link-arrow shrink-0">Toutes les questions {% icon "arrow-right" "size-4" %}</a></div>
-    <div class="mt-12">{% include "public/includes/faq_list.html" with faqs=section.data open_first=True %}</div>
-  </div>
-</section>
-{% endif %}
