@@ -3,7 +3,7 @@ name: malal
 
 x-app: &app
   build: { context: ., target: app }
-  env_file: .env
+  env_file: ${ENV_FILE:-.env}
   restart: unless-stopped
   depends_on:
     db: { condition: service_healthy }

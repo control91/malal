@@ -21,7 +21,7 @@ make admin email=vous@example.com         # super administrateur (mot de passe d
 | http://localhost:8000/admin | back-office |
 | http://localhost:8025 | **Mailpit** : tous les emails envoyés par l'application (aucun ne part réellement) |
 
-Services : `app` (Laravel `artisan serve`, migrations au démarrage), `worker` (file d'attente des
+Services : `app` (serveur PHP intégré, migrations au démarrage), `worker` (file d'attente des
 emails, rechargée à chaque modification), `vite` (rechargement à chaud du front-end), `db`
 (PostgreSQL 17), `redis`, `mailpit`. Le code est monté dans les conteneurs : modifiez vos fichiers
 normalement. En développement, le rendu serveur (SSR) et la CSP sont désactivés pour permettre le

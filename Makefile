@@ -27,7 +27,9 @@ admin:         ## Create a super admin: make admin email=vous@example.com
 
 test:          ## Test-suite (uses the malal_test database)
 	$(COMPOSE) exec db sh -c "psql -U malal -tc \"SELECT 1 FROM pg_database WHERE datname='malal_laravel_test'\" | grep -q 1 || createdb -U malal malal_laravel_test"
-	$(COMPOSE) exec -e DB_HOST=db -e DB_USERNAME=malal -e DB_PASSWORD=malal app ./vendor/bin/pest
+	# Empty environment: the container's variables (CACHE_STORE=redis, APP_ENV=local…) would
+	# otherwise take precedence over phpunit.xml.
+	$(COMPOSE) exec app env -i PATH=/usr/local/bin:/usr/bin:/bin DB_HOST=db DB_USERNAME=malal DB_PASSWORD=malal ./vendor/bin/pest
 
 lint:
 	$(RUN) ./vendor/bin/pint --test

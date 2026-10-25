@@ -11,6 +11,7 @@ use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Models\SiteSetting;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Institutional base content — safe for production. Idempotent: existing rows
@@ -25,7 +26,9 @@ class SiteContentSeeder extends Seeder
     {
         $data = json_decode(file_get_contents(__DIR__.'/data/site-content.json'), true, flags: JSON_THROW_ON_ERROR);
 
-        $site = SiteSetting::current()->fresh();
+        // The cached row may belong to a database that has since been reset.
+        Cache::forget(SiteSetting::CACHE_KEY);
+        $site = SiteSetting::current();
         if (! $site->meta_description) {
             $site->update([
                 'meta_description' => 'Cloud, logiciels SaaS et Intelligence Artificielle pour les entreprises africaines. Basés à Conakry, Guinée.',

@@ -13,14 +13,15 @@ Internet ─HTTPS─> web (Nginx : /build, /storage, proxy) ─FastCGI─> app (
 
 ```bash
 cp .env.example .env              # renseigner TOUTES les valeurs (DB_PASSWORD, MAIL_*, APP_URL…)
-docker compose run --rm app php artisan key:generate --show   # copier la clé dans APP_KEY
+echo "base64:$(openssl rand -base64 32)"   # copier la valeur dans APP_KEY
 docker compose up -d --build
 docker compose exec app php artisan app:seed-site
 docker compose exec -it app php artisan app:create-admin --email=admin@votre-domaine.gn
 ```
 
 Au démarrage, le conteneur `app` applique les migrations et met en cache la configuration, les routes
-et les vues. Ne lancez **jamais** `app:seed-demo` en production (la commande le refuse).
+et les vues. Pour utiliser un autre fichier que `.env` : `ENV_FILE=/chemin/prod.env docker compose up -d`.
+Ne lancez **jamais** `app:seed-demo` en production (la commande le refuse).
 
 ## HTTPS
 

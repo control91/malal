@@ -6,4 +6,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 EXPOSE 8000
 ENTRYPOINT ["/app/docker/dev-entrypoint.sh"]
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# PHP's built-in server directly, not `artisan serve`: the latter lets the bind-mounted
+# .env override the container environment (DB_HOST=db, …).
+ENV PHP_CLI_SERVER_WORKERS=4
+CMD ["sh", "-c", "cd public && exec php -S 0.0.0.0:8000 ../vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php"]
