@@ -44,7 +44,6 @@
     <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
     @unless ($isAdmin)
         <link rel="preload" href="/fonts/nunito-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-        <link rel="preload" href="/fonts/russo-one-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
     @endunless
     <style>:root{--brand-primary:{{ $colors['primary'] }};--brand-accent:{{ $colors['accent'] }};--brand-ink:{{ $colors['ink'] }}}</style>
     @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
