@@ -1,2 +1,0 @@
-<form method="get" class="flex gap-2"><select name="responsable" class="field-select" x-data @change="$el.form.submit()"><option value="">Tous les responsables</option><option value="none" {% if current_owner == 'none' %}selected{% endif %}>Non affectés</option>{% for o in owners %}<option value="{{ o.pk }}" {% if current_owner == o.pk|stringformat:'s' %}selected{% endif %}>{{ o }}</option>{% endfor %}</select></form>
-{% if can_edit %}<a href="{% url 'dashboard:prospects_create' %}" class="btn btn-primary">{% icon "user-plus" "size-4" %}Nouveau prospect</a>{% endif %}

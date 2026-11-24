@@ -1,7 +1,7 @@
 # Guide du back-office
 
-Accès : `https://votre-domaine/dashboard/` (connexion par email). Après 5 échecs de connexion,
-l'accès est bloqué 30 minutes pour ce couple identifiant/adresse IP.
+Accès : `https://votre-domaine/admin` (connexion sur `/connexion`, par email). Après 5 échecs de
+connexion, l'accès est bloqué 30 minutes pour ce couple identifiant/adresse IP.
 
 ## Rôles
 
@@ -35,6 +35,8 @@ Chaque section a un *type* qui détermine sa mise en forme :
 
 Astuce : dans un titre, `*mots*` affiche ces mots en dégradé.
 Les flèches ↑ ↓ réordonnent les sections ; l'œil les masque sans les supprimer.
+Dans les listes d'éléments (fonctionnalités, liens de menu…), « Ajouter » crée une ligne et
+« Supprimer cet élément » la retire à l'enregistrement.
 
 ### Navigation
 **Site → Navigation** : en-tête (avec sous-menus via « élément parent ») et colonnes du footer.
@@ -58,7 +60,8 @@ l'hébergement, emails de notification.
 
 Statut *Brouillon* → invisible. *Publié* avec une date future → **programmé** (publication
 automatique à la date). « Prévisualiser » montre l'article tel qu'il apparaîtra. L'éditeur
-n'accepte pas l'insertion de fichiers : utilisez l'image de couverture ou la médiathèque.
+propose gras, italique, titres, listes, citations et liens ; pour les images, utilisez l'image de
+couverture ou la médiathèque.
 
 ## Réalisations et témoignages
 

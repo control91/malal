@@ -1,8 +1,0 @@
-{% extends "dashboard/crud/form.html" %}
-{% block sidebar_extra %}
-{% if object %}
-  {% if object.is_scheduled %}<div class="mt-4 rounded-xl bg-amber-50 p-3 text-xs text-amber-800 ring-1 ring-amber-200">{% icon "clock" "size-3.5 inline" %} Programmé pour le {{ object.published_at|date:"d/m/Y à H:i" }}.</div>{% endif %}
-  <a href="{{ object.get_absolute_url }}" target="_blank" class="btn btn-ghost mt-2 w-full">{% icon "eye" "size-4" %}Prévisualiser</a>
-{% endif %}
-<div class="mt-4 rounded-xl bg-surface p-3 text-xs leading-relaxed text-slate-500"><strong class="text-ink">Publication différée :</strong> choisissez le statut « Publié » et une date future. L'article apparaîtra automatiquement à cette date.</div>
-{% endblock %}

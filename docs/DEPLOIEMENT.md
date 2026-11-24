@@ -3,78 +3,69 @@
 ## Architecture
 
 ```
-Internet ──HTTPS──> Nginx (TLS, /media) ──> Gunicorn/Django (web) ──> PostgreSQL
-                                                 │                  └─> Redis (cache, broker)
-                                                 └── Celery worker (emails)
+Internet ─HTTPS─> web (Nginx : /build, /storage, proxy) ─FastCGI─> app (PHP-FPM / Laravel) ─> db (PostgreSQL)
+                                                                      │   └──────────────> redis (cache, sessions, files)
+                                                                      ├─> ssr (Node : rendu serveur Inertia)
+                                                   worker (queue:work : emails) · scheduler (schedule:work)
 ```
-
-- Les fichiers statiques sont servis par WhiteNoise (noms hachés, compression, cache immuable).
-- Les médias envoyés par l'équipe sont servis par Nginx depuis le volume `media`
-  (aucune exécution possible), ou par S3 si `USE_S3=true`.
 
 ## Procédure Docker Compose
 
 ```bash
-cp .env.example .env        # puis renseigner TOUTES les valeurs « change-me »
-python3 -c "import secrets; print(secrets.token_urlsafe(64))"   # → DJANGO_SECRET_KEY
+cp .env.example .env              # renseigner TOUTES les valeurs (DB_PASSWORD, MAIL_*, APP_URL…)
+echo "base64:$(openssl rand -base64 32)"   # copier la valeur dans APP_KEY
 docker compose up -d --build
-docker compose exec web python manage.py seed_site            # contenu institutionnel
-docker compose exec web python manage.py create_admin --email admin@votre-domaine.gn
+docker compose exec app php artisan app:seed-site
+docker compose exec -it app php artisan app:create-admin --email=admin@votre-domaine.gn
 ```
 
-Les migrations sont appliquées au démarrage du conteneur `web` (`RUN_MIGRATIONS=1`).
-Ne lancez **jamais** `seed_demo` en production (la commande le refuse).
+Au démarrage, le conteneur `app` applique les migrations et met en cache la configuration, les routes
+et les vues. Pour utiliser un autre fichier que `.env` : `ENV_FILE=/chemin/prod.env docker compose up -d`.
+Ne lancez **jamais** `app:seed-demo` en production (la commande le refuse).
 
 ## HTTPS
 
-`config.settings.prod` impose HTTPS (redirection, HSTS, cookies `Secure` préfixés `__Host-`).
-Deux options :
+Les cookies de session sont `Secure` (`SESSION_SECURE_COOKIE=true`), HSTS est envoyé dès que la
+requête arrive en HTTPS. Deux options :
 
 1. **Proxy amont** (Cloudflare, load balancer, Caddy/Traefik) qui termine TLS et transmet
-   `X-Forwarded-Proto: https` à Nginx (déjà relayé à Django).
-2. **TLS dans Nginx** : ajoutez un bloc `listen 443 ssl` dans `docker/nginx/default.conf`
-   avec vos certificats (Let's Encrypt via certbot) et montez-les dans le conteneur.
+   `X-Forwarded-Proto: https`. Réglez `TRUSTED_PROXIES` sur son adresse.
+2. **TLS dans Nginx** : ajoutez un bloc `listen 443 ssl` dans `docker/nginx/default.conf` avec vos
+   certificats (Let's Encrypt).
 
-Réglez `PROXY_COUNT` selon le nombre de proxys de confiance (1 = Nginx seul), pour que
-l'adresse IP réelle soit utilisée par la limitation des connexions et l'anti-spam.
+## Rendu serveur (SSR)
+
+Le service `ssr` exécute `bootstrap/ssr/ssr.js` : moteurs de recherche et connexions lentes reçoivent
+le HTML complet. S'il est indisponible, Laravel bascule automatiquement sur le rendu côté navigateur
+(le site reste fonctionnel, les métadonnées SEO restent rendues par Laravel).
 
 ## Durcissement recommandé
 
-- `DJANGO_ADMIN_URL` : un chemin difficile à deviner pour l'admin de secours.
-- `ADMIN_ALLOWED_IPS` : restreindre `/dashboard/` et l'admin aux IP du bureau/VPN.
-- Activer `SECURE_HSTS_INCLUDE_SUBDOMAINS` seulement si tous les sous-domaines sont en HTTPS.
-- Configurer `DJANGO_ADMINS_EMAILS` pour recevoir les erreurs 500.
+- `ADMIN_ALLOWED_IPS` : restreindre `/admin` aux IP du bureau ou du VPN.
+- `APP_DEBUG=false` (obligatoire), `LOG_LEVEL=info`.
+- Surveillez le journal d'audit (back-office) et les logs (`docker compose logs -f app worker`).
 
 ## Sauvegardes
 
 À automatiser (cron sur l'hôte) et à tester régulièrement :
 
 ```bash
-# Base de données (quotidien)
 docker compose exec -T db pg_dump -U malal -Fc malal > backups/malal-$(date +%F).dump
-# Médias
-docker run --rm -v malal_media:/data -v "$PWD/backups":/b alpine tar czf /b/media-$(date +%F).tgz -C /data .
+docker run --rm -v malal_storage:/data -v "$PWD/backups":/b alpine tar czf /b/media-$(date +%F).tgz -C /data .
 # Restauration
 docker compose exec -T db pg_restore -U malal -d malal --clean < backups/malal-AAAA-MM-JJ.dump
 ```
 
 Conservez une copie hors du serveur (règle 3-2-1).
 
-## Journalisation et supervision
-
-- Tous les logs (Django, Gunicorn, Celery) sortent sur stdout : `docker compose logs -f web worker`.
-  Chaque ligne porte un identifiant de requête (`req:…`), renvoyé dans l'en-tête `X-Request-ID`.
-- Sonde de santé : `GET /health/` (vérifie la base) — utilisée par le `HEALTHCHECK` Docker.
-- Les opérations sensibles du back-office sont dans **Journal d'audit**.
-
 ## Mise à jour
 
 ```bash
 git pull
-docker compose up -d --build     # migrations appliquées automatiquement
+docker compose up -d --build
 ```
 
 ## Stockage S3 (optionnel)
 
-Renseignez `USE_S3=true` et les variables `S3_*` (AWS, Scaleway, OVH, MinIO…). Ajoutez le domaine
-des fichiers à `CSP_IMG_EXTRA` pour que la politique de sécurité autorise les images.
+`MEDIA_DISK_DRIVER=s3` et les variables `AWS_*` (AWS, Scaleway, OVH, MinIO…). Ajoutez le domaine des
+fichiers à `CSP_IMG_EXTRA`.

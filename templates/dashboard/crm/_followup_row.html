@@ -1,4 +1,0 @@
-<li><a href="{{ lead.get_dashboard_url }}" class="flex items-center gap-3 px-5 py-3.5 hover:bg-surface">
-  <span class="min-w-0 flex-1"><span class="block truncate text-sm font-semibold text-ink">{{ lead }}</span><span class="block truncate text-xs text-slate-500">{{ lead.follow_up_note|default:"Relance" }} · {{ lead.owner|default:"non affecté" }}</span></span>
-  <span class="shrink-0 text-right text-xs"><span class="block font-semibold {% if lead.follow_up_overdue %}text-rose-600{% else %}text-ink{% endif %}">{{ lead.next_follow_up_at|date:"d/m/Y" }}</span><span class="text-slate-400">{{ lead.next_follow_up_at|date:"H:i" }}</span></span>
-</a></li>

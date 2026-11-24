@@ -1,0 +1,6 @@
+{!! $body !!}
+
+--
+{!! $site->company_name !!} · {!! $site->email_contact !!}@if ($site->phone) · {!! $site->phone !!}@endif
+
+Référence de votre demande : {!! $inquiry->reference !!}

@@ -1,9 +1,0 @@
-{% for n in items %}
-<form method="post" action="{% url 'dashboard:notification_read' n.pk %}">{% csrf_token %}
-  <button class="flex w-full gap-3 px-4 py-3 text-left hover:bg-surface {% if not n.read_at %}bg-primary-50/40{% endif %}">
-    <span class="grid size-8 shrink-0 place-items-center rounded-full bg-white text-primary ring-1 ring-line">{% icon n.icon "size-4" %}</span>
-    <span class="min-w-0 flex-1"><span class="block truncate text-sm font-medium text-ink">{{ n.title }}</span>{% if n.body %}<span class="block truncate text-xs text-slate-500">{{ n.body }}</span>{% endif %}<span class="text-[11px] text-slate-400">il y a {{ n.created_at|timesince }}</span></span>
-    {% if not n.read_at %}<span class="mt-1.5 size-2 shrink-0 rounded-full bg-primary"></span>{% endif %}
-  </button>
-</form>
-{% empty %}<p class="px-4 py-8 text-center text-sm text-slate-400">Aucune notification.</p>{% endfor %}

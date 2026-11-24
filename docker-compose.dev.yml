@@ -1,86 +1,136 @@
-# Full development stack in Docker (Django included), with live reload.
-#
-#   docker compose -f docker-compose.dev.yml up --build      # or: make up
-#
-#   Site ............ http://localhost:8000
-#   Back-office ..... http://localhost:8000/dashboard/
-#   Emails (Mailpit)  http://localhost:8025
-#
-# Services only (Django run on the host): docker compose -f docker-compose.dev.yml up -d db redis
-name: malal-dev
-
-x-django: &django
-  build:
-    context: .
-    dockerfile: docker/dev.Dockerfile
+# Base commune aux conteneurs PHP : une seule image construite, réutilisée partout
+x-php: &php
+  image: malal-app-dev:latest
+  restart: unless-stopped
+  working_dir: /var/www
+  env_file:
+    - .env
   volumes:
-    - .:/app
-    - media-dev:/app/media
-  environment: &django-env
-    DJANGO_SETTINGS_MODULE: config.settings.dev
-    DJANGO_DEBUG: "true"
-    DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,0.0.0.0,web
-    SITE_URL: http://localhost:${DEV_PORT:-8000}
-    DATABASE_URL: postgres://malal:malal@db:5432/malal
-    REDIS_URL: redis://redis:6379/0
-    CELERY_BROKER_URL: redis://redis:6379/1
-    CELERY_TASK_ALWAYS_EAGER: "false"
-    EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
-    EMAIL_HOST: mailpit
-    EMAIL_PORT: "1025"
-    EMAIL_USE_TLS: "false"
-    MEDIA_ROOT: /app/media
-  depends_on:
-    db: { condition: service_healthy }
-    redis: { condition: service_healthy }
+    - ./:/var/www
+  networks:
+    - mm_network
+
+# Les workers attendent que les migrations soient passées
+x-php-depends: &php-depends
+  postgres: { condition: service_healthy }
+  redis: { condition: service_healthy }
+  migrate: { condition: service_completed_successfully }
 
 services:
-  web:
-    <<: *django
-    environment:
-      <<: *django-env
-      RUN_MIGRATIONS: "1"
-    ports: ["${DEV_PORT:-8000}:8000"]
+  # Service à usage unique : dépendances + migrations, puis s'arrête
+  migrate:
+    <<: *php
+    build:
+      context: .
+      dockerfile: docker/dev.Dockerfile
+    container_name: mm_migrate
+    restart: "no"
+    command: >
+      sh -c "[ -f vendor/autoload.php ] || composer install --no-interaction &&
+             php artisan migrate --force"
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
 
-  worker:
-    <<: *django
-    command: ["watchfiles", "--filter", "python", "celery -A config worker --loglevel=INFO --concurrency=2", "apps", "config"]
+  app:
+    <<: *php
+    container_name: mm_app
+    depends_on: *php-depends
 
-  assets:
-    image: node:22-alpine
-    working_dir: /app
+  queue:
+    <<: *php
+    container_name: mm_queue
+    command: php artisan queue:work --sleep=3 --tries=3 --timeout=90
+    depends_on: *php-depends
+
+  scheduler:
+    <<: *php
+    container_name: mm_scheduler
+    command: php artisan schedule:work
+    depends_on: *php-depends
+
+  reverb:
+    <<: *php
+    container_name: mm_reverb
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080 --debug
+    ports:
+      - "8081:8080"
+    depends_on: *php-depends
+
+  nginx:
+    image: nginx:alpine
+    container_name: mm_nginx
+    restart: unless-stopped
+    ports:
+      - "${DEV_PORT:-8000}:80"
     volumes:
-      - .:/app
-      # Linux node_modules kept apart from the host's (native binaries differ).
-      - node-modules-dev:/app/node_modules
-    # Vendored libraries/icons are committed: only Tailwind is rebuilt here.
-    # After upgrading a JS dependency, run `npm run vendor` on the host.
-    command: sh -c "npm ci --no-audit --no-fund && npm run watch:css"
-    tty: true
+      - ./:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - mm_network
 
-  db:
+  postgres:
     image: postgres:17-alpine
-    environment: { POSTGRES_DB: malal, POSTGRES_USER: malal, POSTGRES_PASSWORD: malal }
-    ports: ["${DEV_DB_PORT:-55432}:5432"]
-    volumes: [pgdata-dev:/var/lib/postgresql/data]
+    container_name: mm_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U malal -d malal"]
-      interval: 3s
-      retries: 20
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - mm_network
 
   redis:
-    image: redis:7-alpine
-    ports: ["${DEV_REDIS_PORT:-56379}:6379"]
+    image: redis:alpine
+    container_name: mm_redis
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 3s
-      retries: 20
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - mm_network
+
+  node:
+    image: node:22-alpine
+    container_name: mm_node
+    restart: unless-stopped
+    working_dir: /var/www
+    command: sh -c "npm ci --no-audit --no-fund && npm run dev -- --host 0.0.0.0"
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./:/var/www
+      - node_modules:/var/www/node_modules
+    networks:
+      - mm_network
 
   mailpit:
     image: axllent/mailpit:v1.27
-    ports: ["${DEV_MAIL_PORT:-8025}:8025"]
+    container_name: mm_mailpit
+    restart: unless-stopped
+    ports:
+      - "${DEV_MAIL_PORT:-8025}:8025"
+    networks:
+      - mm_network
+
+networks:
+  mm_network:
+    driver: bridge
 
 volumes:
-  pgdata-dev:
-  media-dev:
-  node-modules-dev:
+  postgres_data:
+  node_modules:

@@ -1,0 +1,800 @@
+{
+  "domains": [
+    {
+      "slug": "cloud-computing",
+      "name": "Cloud Computing",
+      "icon": "cloud",
+      "show_hosting_disclosure": true,
+      "tagline": "Hébergez vos applications sur une infrastructure administrée et sécurisée.",
+      "summary": "Hébergement d'applications web, conteneurs Docker, bases de données et sauvegardes, administrés par notre équipe.",
+      "hero_title": "Un cloud *administré* pour vos applications",
+      "hero_subtitle": "Déployez vos sites, API et applications métier sans gérer les serveurs : nous nous occupons de l'installation, des mises à jour, des sauvegardes et de la supervision.",
+      "services": [
+        {
+          "slug": "hebergement-web",
+          "name": "Hébergement d'applications web",
+          "icon": "app-window",
+          "status": "available",
+          "summary": "Sites et applications web hébergés sur des serveurs administrés.",
+          "details": "Certificats TLS automatiques\nNom de domaine personnalisé\nAccompagnement à la mise en ligne"
+        },
+        {
+          "slug": "hebergement-docker",
+          "name": "Hébergement Docker",
+          "icon": "container",
+          "status": "available",
+          "summary": "Déploiement de vos images et stacks Docker Compose.",
+          "details": "Déploiement depuis Git ou registre\nVariables d'environnement gérées\nJournaux d'exécution"
+        },
+        {
+          "slug": "frameworks",
+          "name": "Hébergement Laravel, Django et Node.js",
+          "icon": "code-xml",
+          "status": "available",
+          "summary": "Environnements prêts à l'emploi pour les frameworks les plus utilisés.",
+          "details": "Configuration optimisée par framework\nTâches planifiées et files d'attente\nAccès SSH sur demande"
+        },
+        {
+          "slug": "bases-de-donnees",
+          "name": "Bases de données managées",
+          "icon": "database",
+          "status": "beta",
+          "summary": "PostgreSQL et MySQL administrés, avec sauvegardes.",
+          "details": "Mises à jour gérées\nAccès restreint par réseau\nOuverture progressive aux clients"
+        },
+        {
+          "slug": "sauvegardes",
+          "name": "Sauvegardes",
+          "icon": "database-backup",
+          "status": "available",
+          "summary": "Sauvegardes régulières de vos données et procédures de restauration.",
+          "details": "Fréquence adaptée à votre activité\nRestauration accompagnée"
+        },
+        {
+          "slug": "serveurs-administres",
+          "name": "Serveurs administrés",
+          "icon": "server-cog",
+          "status": "available",
+          "summary": "Nous administrons vos serveurs : sécurité, mises à jour, supervision.",
+          "details": "Durcissement de la sécurité\nMises à jour planifiées\nRapport d'intervention"
+        },
+        {
+          "slug": "vps",
+          "name": "Serveurs virtuels (VPS)",
+          "icon": "server",
+          "status": "coming_soon",
+          "summary": "Des machines virtuelles à la demande, facturées simplement.",
+          "details": ""
+        },
+        {
+          "slug": "infrastructure-locale",
+          "name": "Infrastructure en Guinée",
+          "icon": "landmark",
+          "status": "coming_soon",
+          "summary": "Une infrastructure physiquement hébergée en Guinée fait partie de notre feuille de route.",
+          "details": ""
+        }
+      ]
+    },
+    {
+      "slug": "saas",
+      "name": "Applications SaaS",
+      "icon": "layout-dashboard",
+      "tagline": "Des logiciels en ligne prêts à l'emploi, pensés pour les organisations africaines.",
+      "summary": "Logiciels accessibles depuis un navigateur, sans installation, avec un accompagnement en français.",
+      "hero_title": "Des logiciels *SaaS* conçus pour vos réalités",
+      "hero_subtitle": "Des applications en ligne simples à adopter, utilisables sur des connexions modestes, avec un support de proximité.",
+      "services": [
+        {
+          "slug": "abonnements",
+          "name": "Logiciels par abonnement",
+          "icon": "app-window",
+          "status": "available",
+          "summary": "Accès en ligne, mises à jour incluses, sans infrastructure à gérer.",
+          "details": ""
+        },
+        {
+          "slug": "parametrage",
+          "name": "Paramétrage et formation",
+          "icon": "graduation-cap",
+          "status": "available",
+          "summary": "Mise en route, import de vos données et formation de vos équipes.",
+          "details": ""
+        },
+        {
+          "slug": "integrations",
+          "name": "Intégrations",
+          "icon": "plug",
+          "status": "beta",
+          "summary": "Connexion de nos logiciels à vos outils existants (API, exports).",
+          "details": ""
+        }
+      ]
+    },
+    {
+      "slug": "intelligence-artificielle",
+      "name": "Intelligence Artificielle",
+      "icon": "brain-circuit",
+      "demo_space_enabled": true,
+      "tagline": "Mettre l'IA au service de vos processus, de façon concrète et maîtrisée.",
+      "summary": "Assistants, chatbots métier, analyse de documents et automatisation, intégrés à vos outils.",
+      "hero_title": "Une *IA utile*, intégrée à votre activité",
+      "hero_subtitle": "Nous concevons des assistants et automatisations qui répondent à des besoins précis, avec une attention particulière à la confidentialité de vos données.",
+      "services": [
+        {
+          "slug": "assistants",
+          "name": "Assistants IA pour entreprises",
+          "icon": "bot",
+          "status": "beta",
+          "summary": "Assistants internes qui répondent à partir de vos documents.",
+          "details": ""
+        },
+        {
+          "slug": "chatbots",
+          "name": "Chatbots métier",
+          "icon": "messages-square",
+          "status": "beta",
+          "summary": "Agents conversationnels pour le service client (web, WhatsApp).",
+          "details": ""
+        },
+        {
+          "slug": "automatisation",
+          "name": "Automatisation des processus",
+          "icon": "workflow",
+          "status": "available",
+          "summary": "Automatisation de tâches répétitives : saisie, tri, notifications.",
+          "details": ""
+        },
+        {
+          "slug": "documents",
+          "name": "Analyse intelligente de documents",
+          "icon": "scan-text",
+          "status": "beta",
+          "summary": "Extraction d'informations de factures, contrats, formulaires.",
+          "details": ""
+        },
+        {
+          "slug": "ia-erp",
+          "name": "IA intégrée aux ERP",
+          "icon": "blocks",
+          "status": "coming_soon",
+          "summary": "Fonctions d'IA directement dans vos outils de gestion.",
+          "details": ""
+        },
+        {
+          "slug": "predictif",
+          "name": "Analyse prédictive",
+          "icon": "chart-line",
+          "status": "coming_soon",
+          "summary": "Prévisions à partir de vos données historiques.",
+          "details": ""
+        },
+        {
+          "slug": "api-ia",
+          "name": "Services API IA",
+          "icon": "webhook",
+          "status": "coming_soon",
+          "summary": "Des API d'IA pour les développeurs africains.",
+          "details": ""
+        }
+      ]
+    },
+    {
+      "slug": "developpement-sur-mesure",
+      "name": "Développement sur mesure",
+      "icon": "code",
+      "tagline": "Des logiciels construits autour de vos processus.",
+      "summary": "Applications web et mobiles, ERP, CRM, API et intégration de systèmes.",
+      "hero_title": "Votre logiciel, *sur mesure*",
+      "hero_subtitle": "De l'idée à la mise en production : cadrage, conception, développement, déploiement et maintenance.",
+      "services": [
+        {
+          "slug": "applications-web",
+          "name": "Applications web",
+          "icon": "monitor",
+          "status": "available",
+          "summary": "Plateformes, portails et outils métier accessibles en ligne.",
+          "details": ""
+        },
+        {
+          "slug": "applications-mobiles",
+          "name": "Applications mobiles",
+          "icon": "smartphone",
+          "status": "available",
+          "summary": "Applications Android et iOS, y compris en mode hors-ligne.",
+          "details": ""
+        },
+        {
+          "slug": "erp-crm",
+          "name": "ERP et CRM",
+          "icon": "layout-grid",
+          "status": "available",
+          "summary": "Outils de gestion adaptés : ventes, stocks, RH, relation client.",
+          "details": ""
+        },
+        {
+          "slug": "api",
+          "name": "Développement d'API",
+          "icon": "plug-zap",
+          "status": "available",
+          "summary": "API documentées et sécurisées pour connecter vos services.",
+          "details": ""
+        },
+        {
+          "slug": "integration",
+          "name": "Intégration de systèmes",
+          "icon": "network",
+          "status": "available",
+          "summary": "Connexion de vos logiciels, paiements mobiles et services tiers.",
+          "details": ""
+        },
+        {
+          "slug": "maintenance",
+          "name": "Maintenance applicative",
+          "icon": "life-buoy",
+          "status": "available",
+          "summary": "Correctifs, évolutions et suivi de vos applications.",
+          "details": ""
+        }
+      ]
+    },
+    {
+      "slug": "transformation-numerique",
+      "name": "Transformation numérique",
+      "icon": "rocket",
+      "tagline": "Structurer et accélérer la digitalisation de votre organisation.",
+      "summary": "Diagnostic, feuille de route et accompagnement au changement pour passer au numérique.",
+      "services": [
+        {
+          "slug": "diagnostic",
+          "name": "Diagnostic numérique",
+          "icon": "radar",
+          "status": "available",
+          "summary": "État des lieux de vos outils, processus et besoins.",
+          "details": ""
+        },
+        {
+          "slug": "feuille-de-route",
+          "name": "Feuille de route",
+          "icon": "map",
+          "status": "available",
+          "summary": "Priorisation des chantiers et estimation des moyens.",
+          "details": ""
+        },
+        {
+          "slug": "conduite-changement",
+          "name": "Conduite du changement",
+          "icon": "users",
+          "status": "available",
+          "summary": "Formation et accompagnement des équipes.",
+          "details": ""
+        }
+      ]
+    },
+    {
+      "slug": "conseil-integration",
+      "name": "Conseil et intégration",
+      "icon": "compass",
+      "tagline": "Des choix technologiques éclairés et durables.",
+      "summary": "Architecture, sécurité, choix de solutions et accompagnement de vos projets informatiques.",
+      "services": [
+        {
+          "slug": "architecture",
+          "name": "Conseil en architecture",
+          "icon": "layers",
+          "status": "available",
+          "summary": "Conception d'architectures évolutives et sécurisées.",
+          "details": ""
+        },
+        {
+          "slug": "securite",
+          "name": "Sécurité des systèmes",
+          "icon": "shield-check",
+          "status": "available",
+          "summary": "Revue de sécurité et recommandations priorisées.",
+          "details": ""
+        },
+        {
+          "slug": "choix-solutions",
+          "name": "Choix de solutions",
+          "icon": "list-checks",
+          "status": "available",
+          "summary": "Comparaison objective des solutions du marché.",
+          "details": ""
+        }
+      ]
+    }
+  ],
+  "home": [
+    {
+      "kind": "hero",
+      "theme": "dark",
+      "eyebrow": "Cloud · SaaS · Intelligence Artificielle",
+      "title": "Construisons l'avenir numérique de *l'Afrique*.",
+      "subtitle": "Des solutions Cloud, des logiciels SaaS et des technologies d'Intelligence Artificielle conçus pour accélérer la transformation numérique des entreprises africaines.",
+      "cta_label": "Découvrir nos solutions",
+      "cta_url": "/solutions/",
+      "cta2_label": "Contacter un expert",
+      "cta2_url": "/contact/",
+      "items": [
+        {
+          "icon": "map-pin",
+          "title": "Équipe basée à Conakry"
+        },
+        {
+          "icon": "shield-check",
+          "title": "Sécurité dès la conception"
+        },
+        {
+          "icon": "receipt",
+          "title": "Offres transparentes"
+        }
+      ]
+    },
+    {
+      "kind": "marquee",
+      "limit": 12,
+      "items": []
+    },
+    {
+      "kind": "domains",
+      "eyebrow": "Nos domaines d'expertise",
+      "title": "Une expertise complète, de l'infrastructure à l'IA",
+      "subtitle": "Six domaines complémentaires pour accompagner chaque étape de votre transformation numérique.",
+      "items": []
+    },
+    {
+      "kind": "solutions",
+      "theme": "muted",
+      "eyebrow": "Nos solutions",
+      "title": "Des solutions prêtes à déployer",
+      "subtitle": "Chaque solution affiche clairement son statut : disponible, en bêta ou à venir.",
+      "cta_label": "Voir le catalogue",
+      "cta_url": "/solutions/",
+      "items": []
+    },
+    {
+      "kind": "features",
+      "eyebrow": "Pourquoi nous choisir ?",
+      "title": "Un partenaire technologique *de proximité*",
+      "subtitle": "Nous construisons une relation durable, fondée sur la transparence et l'exigence technique.",
+      "cta_label": "Découvrir l'entreprise",
+      "cta_url": "/entreprise/",
+      "items": [
+        {
+          "icon": "heart-handshake",
+          "title": "Accompagnement de proximité",
+          "text": "Une équipe joignable, qui comprend votre contexte et parle votre langue."
+        },
+        {
+          "icon": "code-xml",
+          "title": "Expertise technique",
+          "text": "Des pratiques d'ingénierie modernes : tests, revue de code, déploiements automatisés."
+        },
+        {
+          "icon": "trending-up",
+          "title": "Solutions évolutives",
+          "text": "Des architectures pensées pour grandir avec votre activité."
+        },
+        {
+          "icon": "receipt",
+          "title": "Transparence des offres",
+          "text": "Des prix lisibles, des engagements clairs et aucun coût caché."
+        },
+        {
+          "icon": "shield-check",
+          "title": "Sécurité intégrée",
+          "text": "La sécurité est prise en compte dès la conception, pas après coup."
+        },
+        {
+          "icon": "globe-2",
+          "title": "Compréhension des besoins africains",
+          "text": "Connexions modestes, paiements mobiles, multilinguisme : nous en tenons compte."
+        }
+      ]
+    },
+    {
+      "kind": "vision",
+      "theme": "dark",
+      "eyebrow": "Notre vision pour l'Afrique",
+      "title": "De la Guinée au *continent*",
+      "subtitle": "Une ambition construite étape par étape, en commençant par servir pleinement nos clients en Guinée.",
+      "items": [
+        {
+          "icon": "map-pin",
+          "title": "Guinée",
+          "text": "Servir les entreprises et institutions guinéennes avec des services cloud, SaaS et IA fiables.",
+          "badge": "Aujourd'hui",
+          "progress": "in_progress"
+        },
+        {
+          "icon": "network",
+          "title": "Afrique de l'Ouest",
+          "text": "Étendre nos services aux pays voisins et nouer des partenariats régionaux.",
+          "badge": "Prochaine étape",
+          "progress": "planned"
+        },
+        {
+          "icon": "globe",
+          "title": "Continent africain",
+          "text": "Contribuer à une offre numérique africaine, compétitive et souveraine.",
+          "badge": "Ambition",
+          "progress": "planned"
+        }
+      ]
+    },
+    {
+      "kind": "news",
+      "eyebrow": "Actualités",
+      "title": "Nos dernières publications",
+      "limit": 3,
+      "items": []
+    },
+    {
+      "kind": "cta",
+      "eyebrow": "Parlons de votre projet",
+      "title": "Prêt à accélérer votre *transformation numérique* ?",
+      "subtitle": "Décrivez votre besoin : nous vous proposons une solution adaptée et un devis transparent.",
+      "cta_label": "Demander un devis",
+      "cta_url": "/devis/",
+      "cta2_label": "Nous contacter",
+      "cta2_url": "/contact/",
+      "items": []
+    }
+  ],
+  "about": [
+    {
+      "kind": "text",
+      "eyebrow": "Notre histoire",
+      "title": "Une entreprise technologique née en Guinée",
+      "body": "<p>[À compléter] Racontez ici la création de l'entreprise : l'année, les fondateurs, le constat de départ et les premières réalisations.</p><p>Nous sommes convaincus que les organisations africaines méritent des services numériques fiables, abordables et conçus pour leurs réalités.</p>",
+      "items": []
+    },
+    {
+      "kind": "features",
+      "theme": "muted",
+      "eyebrow": "Mission, vision, valeurs",
+      "title": "Ce qui nous guide",
+      "items": [
+        {
+          "icon": "target",
+          "title": "Mission",
+          "text": "Rendre le cloud, le logiciel et l'IA accessibles et utiles aux organisations africaines."
+        },
+        {
+          "icon": "compass",
+          "title": "Vision",
+          "text": "Devenir un acteur de référence du numérique en Afrique de l'Ouest, puis sur le continent."
+        },
+        {
+          "icon": "scale",
+          "title": "Intégrité",
+          "text": "Dire ce que nous faisons, faire ce que nous disons — y compris sur nos limites actuelles."
+        },
+        {
+          "icon": "award",
+          "title": "Exigence",
+          "text": "Viser la qualité internationale dans chaque ligne de code et chaque échange."
+        },
+        {
+          "icon": "handshake",
+          "title": "Proximité",
+          "text": "Être disponibles, à l'écoute et engagés dans la réussite de nos clients."
+        },
+        {
+          "icon": "lightbulb",
+          "title": "Innovation utile",
+          "text": "Choisir les technologies pour l'impact qu'elles apportent, pas pour la mode."
+        }
+      ]
+    },
+    {
+      "kind": "split",
+      "eyebrow": "Notre engagement",
+      "title": "Contribuer à la transformation numérique africaine",
+      "body": "<p>Nous formons des talents locaux, privilégions des solutions adaptées aux connexions modestes et documentons nos choix techniques. Nous travaillons à rapprocher progressivement l'hébergement des données de nos clients.</p>",
+      "items": []
+    },
+    {
+      "kind": "team",
+      "eyebrow": "Équipe",
+      "title": "Les femmes et les hommes derrière nos solutions",
+      "limit": 12,
+      "items": []
+    },
+    {
+      "kind": "roadmap",
+      "theme": "muted",
+      "eyebrow": "Feuille de route publique",
+      "title": "Où nous en sommes, où nous allons",
+      "items": [
+        {
+          "icon": "rocket",
+          "title": "Lancement des services de développement sur mesure",
+          "text": "Premiers projets d'applications web et mobiles.",
+          "badge": "Étape 1",
+          "progress": "in_progress"
+        },
+        {
+          "icon": "cloud",
+          "title": "Hébergement administré",
+          "text": "Hébergement d'applications et de conteneurs sur une infrastructure louée auprès de fournisseurs établis.",
+          "badge": "Étape 2",
+          "progress": "in_progress"
+        },
+        {
+          "icon": "layout-dashboard",
+          "title": "Premières solutions SaaS",
+          "text": "Ouverture de logiciels en ligne pour les PME.",
+          "badge": "Étape 3",
+          "progress": "in_progress"
+        },
+        {
+          "icon": "brain-circuit",
+          "title": "Assistants IA et automatisation",
+          "text": "Prototypes puis offres d'IA appliquée aux entreprises.",
+          "badge": "Étape 4",
+          "progress": "planned"
+        },
+        {
+          "icon": "landmark",
+          "title": "Infrastructure locale",
+          "text": "Étude puis déploiement d'une infrastructure hébergée en Guinée.",
+          "badge": "Étape 5",
+          "progress": "planned"
+        }
+      ]
+    },
+    {
+      "kind": "partners",
+      "eyebrow": "Partenaires",
+      "title": "Ils nous accompagnent",
+      "items": []
+    },
+    {
+      "kind": "cta",
+      "title": "Envie de construire avec nous ?",
+      "subtitle": "Clients, partenaires ou talents : parlons-en.",
+      "cta_label": "Nous contacter",
+      "cta_url": "/contact/",
+      "cta2_label": "Voir les carrières",
+      "cta2_url": "/carrieres/",
+      "items": []
+    }
+  ],
+  "legal": {
+    "mentions-legales": {
+      "title": "Mentions légales",
+      "body": "<h2>Éditeur du site</h2><p>[Raison sociale], [forme juridique] au capital de [montant] — RCCM [numéro] — NIF [numéro].<br>Siège social : [adresse], Conakry, Guinée.<br>Directeur de la publication : [nom].</p><h2>Hébergement</h2><p>[Nom de l'hébergeur, adresse, pays].</p><h2>Propriété intellectuelle</h2><p>L'ensemble des contenus de ce site est protégé. Toute reproduction sans autorisation est interdite.</p>"
+    },
+    "confidentialite": {
+      "title": "Politique de confidentialité",
+      "body": "<h2>Données collectées</h2><p>Lorsque vous utilisez nos formulaires, nous collectons les informations que vous saisissez (nom, organisation, email, téléphone, message) ainsi que l'adresse IP utilisée, à des fins de lutte contre les abus.</p><h2>Finalités</h2><p>Ces données servent uniquement à traiter votre demande et à assurer le suivi commercial correspondant. Elles ne sont ni vendues ni cédées.</p><h2>Mesure d'audience</h2><p>Nous mesurons la fréquentation sans cookie ni service tiers, à l'aide de compteurs agrégés. Les signaux « Do Not Track » et « Global Privacy Control » sont respectés.</p><h2>Durée de conservation</h2><p>[À préciser, par exemple 3 ans après le dernier contact.]</p><h2>Vos droits</h2><p>Vous pouvez demander l'accès, la rectification ou la suppression de vos données en écrivant à [email].</p>"
+    },
+    "conditions-generales": {
+      "title": "Conditions générales",
+      "body": "<p>[À compléter avec votre conseil juridique] Conditions générales de vente et d'utilisation des services : objet, commande, prix, paiement, niveaux de service, responsabilité, résiliation, droit applicable.</p>"
+    },
+    "ressources": {
+      "title": "Documentation et ressources",
+      "body": "<p>Retrouvez ici nos guides, fiches techniques et documentations. Les documents sont ajoutés progressivement depuis la médiathèque.</p><ul><li><a href=\"/blog/\">Articles et guides</a></li><li><a href=\"/faq/\">Questions fréquentes</a></li><li><a href=\"/statut/\">Statut des services</a></li></ul>"
+    }
+  },
+  "faqs": [
+    {
+      "category": null,
+      "question": "Où sont hébergées les données de vos clients ?",
+      "answer": "<p>Aujourd'hui, nos services d'hébergement reposent sur des infrastructures louées auprès de fournisseurs cloud établis, situées hors de Guinée. Nous indiquons la localisation précise dans chaque proposition commerciale. Une infrastructure locale fait partie de notre feuille de route.</p>"
+    },
+    {
+      "category": null,
+      "question": "Travaillez-vous uniquement en Guinée ?",
+      "answer": "<p>Nous servons en priorité les organisations basées en Guinée, et accompagnons déjà des projets à distance. L'extension à l'Afrique de l'Ouest est notre prochaine étape.</p>"
+    },
+    {
+      "category": null,
+      "question": "Comment obtenir un devis ?",
+      "answer": "<p>Remplissez le <a href=\"/devis/\">formulaire de devis</a> en décrivant votre besoin. Nous revenons vers vous pour préciser le périmètre avant d'établir une proposition.</p>"
+    },
+    {
+      "category": "cloud-computing",
+      "question": "Que signifie « bêta » pour un service ?",
+      "answer": "<p>Un service en bêta est fonctionnel mais ouvert à un nombre limité de clients. Ses caractéristiques peuvent évoluer et il ne bénéficie pas encore des mêmes engagements qu'un service disponible.</p>"
+    },
+    {
+      "category": "cloud-computing",
+      "question": "Puis-je migrer mon site existant ?",
+      "answer": "<p>Oui, nous accompagnons la migration : analyse, copie des données, tests puis bascule du nom de domaine.</p>"
+    },
+    {
+      "category": "intelligence-artificielle",
+      "question": "Mes données servent-elles à entraîner des modèles ?",
+      "answer": "<p>Non, sauf accord explicite et écrit. Nous définissons avec vous les données utilisées et leur traitement avant tout projet.</p>"
+    }
+  ],
+  "menus": {
+    "header": {
+      "title": "",
+      "items": [
+        {
+          "label": "Solutions",
+          "url": "/solutions/",
+          "description": "",
+          "style": "link",
+          "children": [
+            {
+              "label": "Cloud Computing",
+              "url": "/expertises/cloud-computing/",
+              "description": "Hébergement et infrastructure administrés",
+              "icon": "cloud"
+            },
+            {
+              "label": "Applications SaaS",
+              "url": "/expertises/saas/",
+              "description": "Logiciels en ligne prêts à l'emploi",
+              "icon": "layout-dashboard"
+            },
+            {
+              "label": "Intelligence Artificielle",
+              "url": "/expertises/intelligence-artificielle/",
+              "description": "Assistants, chatbots, automatisation",
+              "icon": "brain-circuit"
+            },
+            {
+              "label": "Développement sur mesure",
+              "url": "/expertises/developpement-sur-mesure/",
+              "description": "Web, mobile, ERP, API",
+              "icon": "code"
+            },
+            {
+              "label": "Transformation numérique",
+              "url": "/expertises/transformation-numerique/",
+              "description": "Diagnostic et feuille de route",
+              "icon": "rocket"
+            },
+            {
+              "label": "Catalogue complet",
+              "url": "/solutions/",
+              "description": "Toutes nos solutions",
+              "icon": "layout-grid"
+            }
+          ]
+        },
+        {
+          "label": "Hébergement web",
+          "url": "/tarifs/",
+          "description": "",
+          "style": "link",
+          "children": []
+        },
+        {
+          "label": "IA",
+          "url": "/ia/",
+          "description": "",
+          "style": "link",
+          "children": []
+        },
+        {
+          "label": "Réalisations",
+          "url": "/realisations/",
+          "description": "",
+          "style": "link",
+          "children": []
+        },
+        {
+          "label": "Ressources",
+          "url": "/blog/",
+          "description": "",
+          "style": "link",
+          "children": []
+        },
+        {
+          "label": "Entreprise",
+          "url": "/entreprise/",
+          "description": "",
+          "style": "link",
+          "children": []
+        },
+        {
+          "label": "Contacter un expert",
+          "url": "/contact/",
+          "description": "",
+          "style": "button",
+          "children": []
+        }
+      ]
+    },
+    "footer_solutions": {
+      "title": "Solutions",
+      "items": [
+        {
+          "label": "Cloud Computing",
+          "url": "/expertises/cloud-computing/"
+        },
+        {
+          "label": "Applications SaaS",
+          "url": "/expertises/saas/"
+        },
+        {
+          "label": "Intelligence Artificielle",
+          "url": "/expertises/intelligence-artificielle/"
+        },
+        {
+          "label": "Développement sur mesure",
+          "url": "/expertises/developpement-sur-mesure/"
+        },
+        {
+          "label": "Hébergement web",
+          "url": "/tarifs/"
+        }
+      ]
+    },
+    "footer_company": {
+      "title": "Entreprise",
+      "items": [
+        {
+          "label": "À propos",
+          "url": "/entreprise/"
+        },
+        {
+          "label": "Réalisations",
+          "url": "/realisations/"
+        },
+        {
+          "label": "Partenaires",
+          "url": "/partenaires/"
+        },
+        {
+          "label": "Carrières",
+          "url": "/carrieres/"
+        },
+        {
+          "label": "Contact",
+          "url": "/contact/"
+        }
+      ]
+    },
+    "footer_resources": {
+      "title": "Ressources",
+      "items": [
+        {
+          "label": "Blog",
+          "url": "/blog/"
+        },
+        {
+          "label": "Documentation",
+          "url": "/ressources/"
+        },
+        {
+          "label": "FAQ",
+          "url": "/faq/"
+        },
+        {
+          "label": "Statut des services",
+          "url": "/statut/"
+        },
+        {
+          "label": "Demander une démo",
+          "url": "/demo/"
+        }
+      ]
+    },
+    "footer_legal": {
+      "title": "Légal",
+      "items": [
+        {
+          "label": "Mentions légales",
+          "url": "/mentions-legales/"
+        },
+        {
+          "label": "Confidentialité",
+          "url": "/confidentialite/"
+        },
+        {
+          "label": "Conditions générales",
+          "url": "/conditions-generales/"
+        }
+      ]
+    }
+  }
+}
