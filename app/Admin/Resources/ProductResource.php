@@ -50,8 +50,8 @@ class ProductResource extends Resource
         return [
             ['title' => 'Présentation', 'fields' => [
                 F::text('name', 'Nom')->required()->max(120), F::slug('slug', 'Adresse (slug)', 'name'), F::belongsTo('service_category_id', 'Domaine', ServiceCategory::class)->required(),
-                F::icon(), F::text('tagline', 'Accroche')->required()->max(200)->wide(), F::textarea('summary', 'Résumé')->required(), F::richtext('description', 'Description détaillée'),
-                F::textarea('benefits', 'Avantages (un par ligne)'), F::text('audience', 'Pour qui ?')->max(255)->wide(), F::image('logo', 'Logo / visuel'),
+                F::icon(), F::text('tagline', 'Accroche')->required()->max(200)->wide(), F::textarea('summary', 'Résumé')->required(), F::image('logo', 'Logo / visuel'),
+                F::richtext('description', 'Détails du projet')->help('Organisez librement la page avec vos propres titres (H2, H3), listes et images.'),
             ]],
             ['title' => 'Publication', 'fields' => [
                 F::enum('status', 'Disponibilité', Availability::class)->required(), F::boolean('is_published', 'Publié'), F::boolean('is_featured', "Mis en avant sur l'accueil"),
@@ -65,7 +65,7 @@ class ProductResource extends Resource
     public static function repeaters(): array
     {
         return [
-            new Repeater('features', 'Fonctionnalités', [F::integer('order', 'Ordre'), F::icon(), F::text('title', 'Fonctionnalité')->required()->max(120), F::textarea('description', 'Description')]),
+            new Repeater('features', 'Fonctionnalités (cartes du catalogue et de la page IA)', [F::integer('order', 'Ordre'), F::icon(), F::text('title', 'Fonctionnalité')->required()->max(120), F::textarea('description', 'Description')]),
             new Repeater('screenshots', "Captures d'écran", [F::integer('order', 'Ordre'), F::image('image', 'Image'), F::text('caption', 'Légende')->max(200)]),
         ];
     }

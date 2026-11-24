@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, provide, watch } from 'vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import Icon from '@/Components/Ui/Icon.vue';
 import PageHeading from './PageHeading.vue';
@@ -12,6 +12,8 @@ import { formatDateTime } from '@/format';
 /** Generic create/edit form driven by the Resource schema. Slots: before, after, sidebar. */
 const props = defineProps({ resource: Object, record: Object, fieldsets: Array, repeaters: Array, values: Object, canEdit: Boolean });
 const clears = Object.fromEntries(props.fieldsets.flatMap((s) => s.fields).filter((f) => ['image', 'logo', 'file'].includes(f.type)).map((f) => [`${f.name}_clear`, false]));
+// Rich text editors of this form upload their inline images here.
+provide('editorImageUrl', props.canEdit ? route('admin.editor.image', props.resource.slug) : null);
 const form = useForm({ ...props.values, ...clears, _continue: false, next: new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '').get('next') ?? '' });
 
 // Slug auto-fill from its source field while the slug has not been edited by hand.

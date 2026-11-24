@@ -16,11 +16,14 @@ class CaseStudyController extends Controller
 {
     public function index(Request $request): Response
     {
-        $all = CaseStudy::published()->ordered()->get();
+        $all = CaseStudy::published()->ordered()->with('images')->get();
         $sector = (string) $request->query('secteur');
 
         return Inertia::render('Site/Cases', [
-            'cases' => $all->when($sector, fn ($c) => $c->where('sector', $sector))->values()->map(fn ($c) => Present::caseCard($c)),
+            'cases' => $all->when($sector, fn ($c) => $c->where('sector', $sector))->values()->map(fn ($c) => Present::caseCard($c) + [
+                'client' => $c->publicClient(), 'year' => $c->year,
+                'images' => $c->images->take(3)->map(fn ($i) => ['id' => $i->id, 'image' => Images::url($i->image), 'caption' => $i->caption])->all(),
+            ]),
             'sectors' => $all->pluck('sector')->unique()->sort()->values(),
             'current_sector' => $sector,
             'testimonials' => Testimonial::published()->ordered()->limit(6)->get()->map(fn ($t) => Present::testimonial($t)),
@@ -34,7 +37,7 @@ class CaseStudyController extends Controller
         return Inertia::render('Site/Case', [
             'item' => Present::caseCard($case) + [
                 'client' => $case->publicClient(), 'year' => $case->year,
-                'challenge' => $case->challenge, 'solution' => $case->solution, 'results' => $case->results,
+                'body' => $case->body,
                 'services' => $case->services->map(fn ($s) => ['name' => $s->name, 'url' => $s->url()])->all(),
                 'images' => $case->images->map(fn ($i) => ['id' => $i->id, 'image' => Images::url($i->image), 'caption' => $i->caption])->all(),
                 'testimonials' => $case->testimonials->map(fn ($t) => Present::testimonial($t))->all(),

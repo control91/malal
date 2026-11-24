@@ -24,7 +24,7 @@ class SeoController extends Controller
     public function sitemap(): Response
     {
         $xml = Cache::remember('sitemap.xml', 1800, function () {
-            $urls = collect(['home', 'solutions.index', 'pricing', 'blog.index', 'cases.index', 'contact', 'quote', 'demo', 'faq', 'careers'])
+            $urls = collect(['home', 'solutions.index', 'pricing', 'ai', 'blog.index', 'cases.index', 'contact', 'quote', 'demo', 'faq', 'careers'])
                 ->map(fn ($name) => ['loc' => route($name), 'lastmod' => null]);
             $add = fn ($items, $url) => $items->each(fn ($m) => $urls->push(['loc' => $url($m), 'lastmod' => $m->updated_at?->toAtomString()]));
 

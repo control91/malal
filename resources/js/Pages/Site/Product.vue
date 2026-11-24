@@ -41,29 +41,13 @@ const billing = ref('monthly');
     </div>
   </section>
 
-  <section v-if="product.all_features.length" class="section">
-    <div class="container-x">
-      <div class="mx-auto max-w-2xl text-center" data-reveal><p class="eyebrow justify-center">Fonctionnalités</p><h2 class="h-section mt-4">Ce que {{ product.name }} vous apporte</h2></div>
-      <div class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        <div v-for="f in product.all_features" :key="f.id" class="card" data-reveal><span class="icon-tile"><Icon :name="f.icon || 'sparkles'" size="size-6" /></span><h3 class="mt-5 font-display text-lg">{{ f.title }}</h3><p v-if="f.description" class="mt-2 text-sm leading-relaxed text-slate-400">{{ f.description }}</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section v-if="product.description || product.benefits.length" class="section-sm muted-zone">
-    <div class="container-x grid gap-12 lg:grid-cols-12">
-      <RichText :html="product.description" class="lg:col-span-7" data-reveal />
-      <aside v-if="product.benefits.length || product.audience" class="lg:col-span-5" data-reveal><div class="card">
-        <template v-if="product.audience"><p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Pour qui ?</p><p class="mt-2 text-white">{{ product.audience }}</p></template>
-        <template v-if="product.benefits.length"><p class="mt-6 text-xs font-semibold uppercase tracking-wider text-slate-500">Avantages</p>
-          <ul class="mt-3 space-y-3"><li v-for="line in product.benefits" :key="line" class="flex gap-3 text-sm text-slate-300"><Icon name="circle-check" size="size-5 shrink-0 text-emerald-400" />{{ line }}</li></ul></template>
-      </div></aside>
-    </div>
+  <section v-if="product.description" class="section-sm">
+    <div class="container-x"><RichText :html="product.description" class="mx-auto max-w-3xl" data-reveal /></div>
   </section>
 
   <section v-if="product.screenshots.length > 1" class="section-sm">
-    <div class="container-x"><h2 class="font-display text-2xl" data-reveal>Captures d'écran</h2>
-      <div class="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3"><figure v-for="s in product.screenshots" :key="s.id" class="overflow-hidden rounded-2xl border border-white/10" data-reveal><img :src="s.image" :alt="s.caption || product.name" loading="lazy" class="aspect-video w-full object-cover" width="640" height="360"><figcaption v-if="s.caption" class="px-4 py-3 text-sm text-slate-400">{{ s.caption }}</figcaption></figure></div>
+    <div class="container-x">
+      <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3"><figure v-for="s in product.screenshots" :key="s.id" class="overflow-hidden rounded-2xl border border-white/10" data-reveal><img :src="s.image" :alt="s.caption || product.name" loading="lazy" class="aspect-video w-full object-cover" width="640" height="360"><figcaption v-if="s.caption" class="px-4 py-3 text-sm text-slate-400">{{ s.caption }}</figcaption></figure></div>
     </div>
   </section>
 

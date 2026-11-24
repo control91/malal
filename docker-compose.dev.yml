@@ -1,83 +1,136 @@
-# Full development stack in Docker, with live reload.
-#
-#   make up        (= docker compose -f docker-compose.dev.yml up --build)
-#
-#   Site ............ http://localhost:8000
-#   Back-office ..... http://localhost:8000/admin
-#   Emails (Mailpit)  http://localhost:8025
-#
-# Services only (PHP/Node on the host): docker compose -f docker-compose.dev.yml up -d db redis mailpit
-name: malal-dev
+# Base commune aux conteneurs PHP : une seule image construite, réutilisée partout
+x-php: &php
+  image: malal-app-dev:latest
+  restart: unless-stopped
+  working_dir: /var/www
+  env_file:
+    - .env
+  volumes:
+    - ./:/var/www
+  networks:
+    - mm_network
 
-x-laravel: &laravel
-  build: { context: ., dockerfile: docker/dev.Dockerfile }
-  volumes: [".:/app"]
-  environment: &laravel-env
-    APP_ENV: local
-    APP_DEBUG: "true"
-    APP_URL: http://localhost:${DEV_PORT:-8000}
-    DB_CONNECTION: pgsql
-    DB_HOST: db
-    DB_PORT: "5432"
-    DB_DATABASE: malal
-    DB_USERNAME: malal
-    DB_PASSWORD: malal
-    REDIS_HOST: redis
-    CACHE_STORE: redis
-    SESSION_DRIVER: redis
-    QUEUE_CONNECTION: redis
-    MAIL_MAILER: smtp
-    MAIL_HOST: mailpit
-    MAIL_PORT: "1025"
-    INERTIA_SSR_ENABLED: "false"
-    CSP_ENABLED: "false"
-  depends_on:
-    db: { condition: service_healthy }
-    redis: { condition: service_healthy }
+# Les workers attendent que les migrations soient passées
+x-php-depends: &php-depends
+  postgres: { condition: service_healthy }
+  redis: { condition: service_healthy }
+  migrate: { condition: service_completed_successfully }
 
 services:
+  # Service à usage unique : dépendances + migrations, puis s'arrête
+  migrate:
+    <<: *php
+    build:
+      context: .
+      dockerfile: docker/dev.Dockerfile
+    container_name: mm_migrate
+    restart: "no"
+    command: >
+      sh -c "[ -f vendor/autoload.php ] || composer install --no-interaction &&
+             php artisan migrate --force"
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+
   app:
-    <<: *laravel
-    environment: { <<: *laravel-env, RUN_MIGRATIONS: "1" }
-    ports: ["${DEV_PORT:-8000}:8000"]
+    <<: *php
+    container_name: mm_app
+    depends_on: *php-depends
 
-  worker:
-    <<: *laravel
-    command: ["php", "artisan", "queue:listen", "--tries=3"]
+  queue:
+    <<: *php
+    container_name: mm_queue
+    command: php artisan queue:work --sleep=3 --tries=3 --timeout=90
+    depends_on: *php-depends
 
-  vite:
-    image: node:22-alpine
-    working_dir: /app
-    environment: { VITE_HOST: 0.0.0.0 }
+  scheduler:
+    <<: *php
+    container_name: mm_scheduler
+    command: php artisan schedule:work
+    depends_on: *php-depends
+
+  reverb:
+    <<: *php
+    container_name: mm_reverb
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080 --debug
+    ports:
+      - "8081:8080"
+    depends_on: *php-depends
+
+  nginx:
+    image: nginx:alpine
+    container_name: mm_nginx
+    restart: unless-stopped
+    ports:
+      - "${DEV_PORT:-8000}:80"
     volumes:
-      - .:/app
-      # Linux node_modules kept apart from the host's (native binaries differ).
-      - node-modules-dev:/app/node_modules
-    command: sh -c "npm ci --no-audit --no-fund && npm run dev"
-    ports: ["5173:5173"]
+      - ./:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - mm_network
 
-  db:
+  postgres:
     image: postgres:17-alpine
-    environment: { POSTGRES_DB: malal, POSTGRES_USER: malal, POSTGRES_PASSWORD: malal }
-    ports: ["${DEV_DB_PORT:-55432}:5432"]
-    volumes: [pgdata-dev:/var/lib/postgresql/data]
+    container_name: mm_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U malal -d malal"]
-      interval: 3s
-      retries: 20
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - mm_network
 
   redis:
-    image: redis:7-alpine
-    ports: ["${DEV_REDIS_PORT:-56379}:6379"]
+    image: redis:alpine
+    container_name: mm_redis
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 3s
-      retries: 20
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - mm_network
+
+  node:
+    image: node:22-alpine
+    container_name: mm_node
+    restart: unless-stopped
+    working_dir: /var/www
+    command: sh -c "npm ci --no-audit --no-fund && npm run dev -- --host 0.0.0.0"
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./:/var/www
+      - node_modules:/var/www/node_modules
+    networks:
+      - mm_network
 
   mailpit:
     image: axllent/mailpit:v1.27
-    ports: ["${DEV_MAIL_PORT:-8025}:8025"]
+    container_name: mm_mailpit
+    restart: unless-stopped
+    ports:
+      - "${DEV_MAIL_PORT:-8025}:8025"
+    networks:
+      - mm_network
+
+networks:
+  mm_network:
+    driver: bridge
 
 volumes:
-  pgdata-dev:
-  node-modules-dev:
+  postgres_data:
+  node_modules:

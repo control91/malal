@@ -45,9 +45,10 @@ class DemoSeeder extends Seeder
             $product = Product::firstOrCreate(['slug' => $item['slug']], [
                 'service_category_id' => $categories[$item['category']], 'name' => $item['name'], 'icon' => $item['icon'], 'tagline' => $item['tagline'],
                 'summary' => $item['summary'], 'status' => $item['status'], 'is_example' => true, 'is_published' => true, 'is_featured' => $order < 3,
-                'order' => $order * 10, 'benefits' => "Prise en main rapide\nAccessible depuis un navigateur\nSupport en français",
-                'audience' => 'PME, associations et institutions (exemple)',
-                'description' => "<p>Fiche d'exemple : décrivez ici la solution réelle, son fonctionnement et ses bénéfices.</p>",
+                'order' => $order * 10,
+                'description' => "<p>Fiche d'exemple : décrivez ici la solution réelle, son fonctionnement et ses bénéfices.</p>"
+                    .'<h2>Pour qui ?</h2><p>PME, associations et institutions (exemple)</p>'
+                    .'<h2>Avantages</h2><ul><li><p>Prise en main rapide</p></li><li><p>Accessible depuis un navigateur</p></li><li><p>Support en français</p></li></ul>',
             ]);
             if ($product->wasRecentlyCreated) {
                 foreach ($item['features'] as $i => $feature) {
@@ -127,9 +128,9 @@ class DemoSeeder extends Seeder
         $case = CaseStudy::firstOrCreate(['slug' => 'digitalisation-cooperative-exemple'], [
             'title' => "Digitalisation d'une coopérative agricole", 'sector' => 'Agriculture', 'is_example' => true, 'status' => 'published',
             'summary' => 'Exemple illustratif : suivi des collectes et paiements des producteurs via une application mobile hors-ligne.',
-            'challenge' => '<p>Exemple : les collectes étaient enregistrées sur papier, ce qui retardait les paiements et compliquait les contrôles.</p>',
-            'solution' => '<p>Exemple : application mobile utilisable sans connexion, synchronisée dès que le réseau est disponible, et tableau de bord web.</p>',
-            'results' => '<p>Section à remplir uniquement avec des résultats mesurés et validés par le client.</p>',
+            'body' => '<h2>Le contexte</h2><p>Exemple : les collectes étaient enregistrées sur papier, ce qui retardait les paiements et compliquait les contrôles.</p>'
+                .'<h2>Ce que nous avons réalisé</h2><p>Exemple : application mobile utilisable sans connexion, synchronisée dès que le réseau est disponible, et tableau de bord web.</p>'
+                .'<h2>Résultats</h2><p>Section à remplir uniquement avec des résultats mesurés et validés par le client.</p>',
             'technologies' => 'Laravel, PostgreSQL, Vue.js, Flutter, Docker',
         ]);
         $case->services()->syncWithoutDetaching([$custom]);

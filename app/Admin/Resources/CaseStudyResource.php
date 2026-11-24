@@ -54,7 +54,8 @@ class CaseStudyResource extends Resource
                 F::text('client_name', 'Client')->max(160), F::boolean('show_client_name', 'Nommer le client publiquement'), F::boolean('publication_consent', 'Consentement de publication obtenu'),
                 F::text('consent_reference', 'Référence du consentement')->max(200)->help('Ex. email du 12/03/2026, contrat §7…'), F::boolean('is_example', 'Exemple illustratif (badge public)'),
             ]],
-            ['title' => 'Contenu', 'fields' => [F::richtext('challenge', 'Problématique')->required(), F::richtext('solution', 'Solution apportée')->required(), F::richtext('results', 'Résultats (vérifiables uniquement)')]],
+            ['title' => 'Contenu', 'fields' => [F::richtext('body', 'Détails du projet')->required()
+                ->help("Organisez librement le contenu avec vos propres titres (H2, H3), listes et images. N'indiquez que des résultats mesurés et validés par le client.")]],
             ['title' => 'Publication', 'fields' => [F::enum('status', 'Statut', PublishStatus::class)->required(), F::integer('order', 'Ordre')]],
             ['title' => 'Référencement (SEO)', 'fields' => [F::text('meta_title', 'Meta title')->max(70)->counter(60), F::text('meta_description', 'Meta description')->max(170)->counter(155)->wide(), F::image('og_image', 'Image de partage'), F::boolean('noindex', 'Masquer aux moteurs de recherche')]],
         ];

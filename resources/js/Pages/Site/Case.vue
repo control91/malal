@@ -24,9 +24,7 @@ defineProps({ item: Object });
       </aside>
       <div class="space-y-12 lg:col-span-8">
         <img v-if="item.cover" :src="item.cover" alt="" class="w-full rounded-3xl object-cover" width="960" height="540">
-        <div><h2 class="flex items-center gap-3 font-display text-2xl"><span class="icon-tile size-10 rounded-xl"><Icon name="target" /></span>Problématique</h2><RichText :html="item.challenge" class="mt-5" /></div>
-        <div><h2 class="flex items-center gap-3 font-display text-2xl"><span class="icon-tile size-10 rounded-xl"><Icon name="lightbulb" /></span>Solution apportée</h2><RichText :html="item.solution" class="mt-5" /></div>
-        <div v-if="item.results"><h2 class="flex items-center gap-3 font-display text-2xl"><span class="icon-tile size-10 rounded-xl"><Icon name="trending-up" /></span>Résultats</h2><RichText :html="item.results" class="mt-5" /></div>
+        <RichText v-if="item.body" :html="item.body" />
         <div v-if="item.images.length" class="grid gap-4 sm:grid-cols-2"><figure v-for="img in item.images" :key="img.id"><img :src="img.image" :alt="img.caption" class="aspect-video w-full rounded-2xl object-cover" loading="lazy" width="640" height="360"><figcaption v-if="img.caption" class="mt-2 text-xs text-slate-500">{{ img.caption }}</figcaption></figure></div>
         <figure v-for="t in item.testimonials" :key="t.id" class="rounded-3xl border border-white/10 bg-white/[0.03] p-8"><blockquote class="font-display text-xl leading-relaxed text-white">« {{ t.quote }} »</blockquote><figcaption class="mt-5 text-sm text-slate-400"><strong class="text-white">{{ t.author_name }}</strong><template v-if="t.author_role">, {{ t.author_role }}</template><template v-if="t.organization"> — {{ t.organization }}</template></figcaption></figure>
       </div>

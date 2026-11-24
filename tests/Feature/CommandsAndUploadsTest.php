@@ -2,6 +2,8 @@
 
 use App\Admin\Rules\SafeSvg;
 use App\Enums\Role;
+use App\Models\CaseStudy;
+use App\Models\MediaAsset;
 use App\Models\PageSection;
 use App\Models\Service;
 use App\Models\TeamMember;
@@ -59,4 +61,28 @@ it('resizes and converts uploaded images to WebP', function () {
     expect($member->photo)->toEndWith('.webp');
     [$width] = getimagesizefromstring(Storage::disk('media')->get($member->photo));
     expect($width)->toBeLessThanOrEqual(2000);
+});
+
+it('uploads images inserted in rich text and keeps them in the saved content', function () {
+    Storage::fake('media');
+    $this->actingAs(staff(Role::Editor));
+
+    $response = $this->postJson('/admin/realisations/image-editeur', ['image' => UploadedFile::fake()->image('ecran.png', 1200, 800), 'alt' => "Écran d'accueil"])
+        ->assertOk()->assertJsonPath('alt', "Écran d'accueil");
+    $url = $response->json('url');
+    expect($url)->toEndWith('.webp');
+    expect(MediaAsset::where('title', 'ecran')->where('alt_text', "Écran d'accueil")->exists())->toBeTrue();
+
+    $case = CaseStudy::create(['title' => 'P', 'slug' => 'p', 'sector' => 'S', 'summary' => 's', 'body' => "<p>Avant</p><img src=\"$url\" alt=\"Écran\" onerror=\"alert(1)\">"]);
+    expect($case->fresh()->body)->toContain('<img src="'.$url.'"')->not->toContain('onerror');
+});
+
+it('restricts rich text image uploads to people who can edit the resource', function () {
+    Storage::fake('media');
+    $image = fn () => UploadedFile::fake()->image('a.png');
+
+    $this->actingAs(staff(Role::Viewer))->postJson('/admin/realisations/image-editeur', ['image' => $image()])->assertForbidden();
+    $this->actingAs(staff(Role::Sales))->postJson('/admin/articles/image-editeur', ['image' => $image()])->assertForbidden();
+    $this->actingAs(staff(Role::Editor))->postJson('/admin/partenaires/image-editeur', ['image' => $image()])->assertNotFound();
+    $this->actingAs(staff(Role::Editor))->postJson('/admin/articles/image-editeur', ['image' => UploadedFile::fake()->create('doc.pdf', 10, 'application/pdf')])->assertJsonValidationErrors('image');
 });

@@ -107,7 +107,6 @@ L'API publique `/api/v1` (lecture seule, limitée en débit) est le point de dé
 - Pas de mode sombre pour le back-office (le site public est sombre par conception).
 - Pas de CAPTCHA tiers (choix de confidentialité) ; Cloudflare Turnstile peut être ajouté si besoin.
 - Candidatures via le formulaire de contact (lien vers CV), sans upload de CV.
-- Pas d'insertion d'images dans le corps des articles (image de couverture et médiathèque).
 - Page Statut mise à jour manuellement ; notifications in-app non temps réel.
 - Pas d'administration de secours type Django Admin : tout passe par le back-office.
 - La carte « Vision » est une représentation stylisée, pas une carte géographique précise.

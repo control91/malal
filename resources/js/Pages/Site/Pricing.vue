@@ -12,7 +12,7 @@ const site = computed(() => usePage().props.site);
 </script>
 
 <template>
-  <PageHeader eyebrow="Tarifs" title="Des offres *transparentes*" subtitle="Des formules claires pour démarrer, et des devis sur mesure pour les projets spécifiques. Les prix affichés sont indicatifs et confirmés dans votre proposition commerciale." />
+  <PageHeader eyebrow="Hébergement web" title="Cloud et hébergement *web*" subtitle="Hébergez vos sites, applications et données avec des formules claires, administrées par notre équipe. Les prix affichés sont indicatifs et confirmés dans votre proposition commerciale." />
   <section class="section-sm">
     <div class="container-x">
       <div v-if="tables.length" class="flex justify-center">
@@ -42,11 +42,11 @@ const site = computed(() => usePage().props.site);
         </div>
       </div>
       <div v-if="!tables.length" class="mx-auto max-w-xl rounded-[var(--radius-card)] border border-dashed border-white/15 p-12 text-center">
-        <h2 class="font-display text-2xl">Tarifs sur devis</h2><p class="mt-3 text-slate-400">Nos grilles tarifaires publiques arrivent prochainement. En attendant, nous établissons une proposition personnalisée.</p>
+        <h2 class="font-display text-2xl">Hébergement sur devis</h2><p class="mt-3 text-slate-400">Nos offres d'hébergement publiques arrivent prochainement. En attendant, nous établissons une proposition adaptée à votre site ou à votre application.</p>
         <Link :href="route('quote')" class="btn btn-primary mt-6">Demander un devis</Link>
       </div>
       <p v-if="site.hosting_disclosure && tables.length" class="mx-auto mt-14 flex max-w-3xl items-start gap-2 text-sm text-slate-500"><Icon name="info" size="size-4 mt-0.5 shrink-0" />{{ site.hosting_disclosure }}</p>
     </div>
   </section>
-  <CtaBand title="Besoin d'une offre sur mesure ?" text="Volumes importants, contraintes réglementaires, intégration spécifique : nous construisons une proposition adaptée." />
+  <CtaBand title="Besoin d'un hébergement sur mesure ?" text="Fort trafic, contraintes réglementaires, migration depuis un autre hébergeur : nous construisons une proposition adaptée." />
 </template>

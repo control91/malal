@@ -309,7 +309,7 @@
     {
       "kind": "hero",
       "theme": "dark",
-      "eyebrow": "Cloud · SaaS · Intelligence Artificielle — depuis Conakry",
+      "eyebrow": "Cloud · SaaS · Intelligence Artificielle",
       "title": "Construisons l'avenir numérique de *l'Afrique*.",
       "subtitle": "Des solutions Cloud, des logiciels SaaS et des technologies d'Intelligence Artificielle conçus pour accélérer la transformation numérique des entreprises africaines.",
       "cta_label": "Découvrir nos solutions",
@@ -320,10 +320,6 @@
         {
           "icon": "map-pin",
           "title": "Équipe basée à Conakry"
-        },
-        {
-          "icon": "languages",
-          "title": "Accompagnement en français"
         },
         {
           "icon": "shield-check",
@@ -665,8 +661,15 @@
           ]
         },
         {
-          "label": "Tarifs",
+          "label": "Hébergement web",
           "url": "/tarifs/",
+          "description": "",
+          "style": "link",
+          "children": []
+        },
+        {
+          "label": "IA",
+          "url": "/ia/",
           "description": "",
           "style": "link",
           "children": []
@@ -721,7 +724,7 @@
           "url": "/expertises/developpement-sur-mesure/"
         },
         {
-          "label": "Tarifs",
+          "label": "Hébergement web",
           "url": "/tarifs/"
         }
       ]

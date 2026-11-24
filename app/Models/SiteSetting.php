@@ -26,9 +26,12 @@ class SiteSetting extends Model
     public static function current(): self
     {
         return Cache::remember(self::CACHE_KEY, 300, function () {
-            return self::query()->firstOrCreate(['id' => 1], [
+            $site = self::query()->firstOrCreate(['id' => 1], [
                 'hosting_disclosure' => "Nos services d'hébergement s'appuient aujourd'hui sur des infrastructures louées auprès de fournisseurs cloud établis, situées hors de Guinée. Le déploiement d'une infrastructure locale fait partie de notre feuille de route.",
             ]);
+
+            // A freshly inserted row lacks the column defaults set by the database (company_name…).
+            return $site->wasRecentlyCreated ? $site->refresh() : $site;
         });
     }
 

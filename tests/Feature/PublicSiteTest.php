@@ -7,6 +7,8 @@ use App\Models\Page;
 use App\Models\PageSection;
 use App\Models\Product;
 use App\Models\ServiceCategory;
+use App\Models\SiteSetting;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Testing\AssertableInertia as Assert;
 
 beforeEach(fn () => seedSite());
@@ -15,7 +17,7 @@ it('renders every public page', function (string $url, string $component) {
     $this->get($url)->assertOk()->assertInertia(fn (Assert $page) => $page->component($component));
 })->with([
     ['/', 'Site/Home'], ['/entreprise', 'Site/Page'], ['/expertises/cloud-computing', 'Site/Expertise'], ['/solutions', 'Site/Catalog'],
-    ['/tarifs', 'Site/Pricing'], ['/blog', 'Site/Blog'], ['/realisations', 'Site/Cases'], ['/contact', 'Site/Contact'], ['/devis', 'Site/Quote'],
+    ['/tarifs', 'Site/Pricing'], ['/ia', 'Site/Ai'], ['/blog', 'Site/Blog'], ['/realisations', 'Site/Cases'], ['/contact', 'Site/Contact'], ['/devis', 'Site/Quote'],
     ['/demo', 'Site/Demo'], ['/faq', 'Site/Faq'], ['/carrieres', 'Site/Careers'], ['/partenaires', 'Site/Partners'], ['/statut', 'Site/Status'],
     ['/mentions-legales', 'Site/Page'], ['/confidentialite', 'Site/Page'], ['/ressources', 'Site/Page'],
 ]);
@@ -63,10 +65,11 @@ it('filters the catalog and hides unpublished solutions', function () {
 });
 
 it('requires consent before publishing a case study', function () {
-    $case = CaseStudy::create(['title' => 'Projet', 'slug' => 'projet', 'sector' => 'Banque', 'summary' => 's', 'challenge' => 'c', 'solution' => 's', 'status' => 'published']);
+    $case = CaseStudy::create(['title' => 'Projet', 'slug' => 'projet', 'sector' => 'Banque', 'summary' => 's', 'body' => '<p>Détails</p>', 'status' => 'published']);
     $this->get('/realisations/projet')->assertNotFound();
-    $case->update(['publication_consent' => true]);
-    $this->get('/realisations/projet')->assertOk();
+    $case->update(['publication_consent' => true, 'body' => '<h2>Notre approche</h2><p>Détails</p>']);
+    $this->get('/realisations/projet')->assertOk()->assertInertia(fn (Assert $page) => $page->component('Site/Case')
+        ->where('item.body', '<h2>Notre approche</h2><p>Détails</p>')->missing('item.challenge'));
 });
 
 it('exposes robots.txt and an XML sitemap', function () {
@@ -88,4 +91,54 @@ it('serves the read-only public API', function () {
 
 it('answers the health check', function () {
     $this->get('/up')->assertOk();
+});
+
+it('renders the home page on an empty database', function () {
+    SiteSetting::query()->delete();
+    Cache::flush();
+
+    $this->get('/')->assertOk()->assertInertia(fn (Assert $page) => $page->where('seo.title', 'MALAL'));
+});
+
+it('presents the pricing page as web hosting', function () {
+    $this->get('/tarifs')->assertOk()->assertInertia(fn (Assert $page) => $page->component('Site/Pricing')->where('seo.title', 'Hébergement web'));
+});
+
+it('lists only the published AI applications on the IA page', function () {
+    $ai = ServiceCategory::where('slug', 'intelligence-artificielle')->first();
+    $cloud = ServiceCategory::where('slug', 'cloud-computing')->first();
+    $assistant = Product::create(['service_category_id' => $ai->id, 'name' => 'Assistant IA', 'slug' => 'assistant-ia', 'tagline' => 't', 'summary' => 's', 'is_published' => true, 'external_url' => 'https://app.example.com']);
+    $assistant->screenshots()->create(['image' => 'products/shot.webp', 'caption' => 'Exemple de conversation']);
+    Product::create(['service_category_id' => $ai->id, 'name' => 'Brouillon IA', 'slug' => 'brouillon-ia', 'tagline' => 't', 'summary' => 's', 'is_published' => false]);
+    Product::create(['service_category_id' => $cloud->id, 'name' => 'Serveur Cloud', 'slug' => 'serveur-cloud', 'tagline' => 't', 'summary' => 's', 'is_published' => true]);
+
+    $this->get('/ia')->assertOk()->assertInertia(fn (Assert $page) => $page->component('Site/Ai')
+        ->has('products', 1)
+        ->where('products.0.name', 'Assistant IA')
+        ->where('products.0.external_url', 'https://app.example.com')
+        ->where('products.0.screenshots.0.caption', 'Exemple de conversation'));
+});
+
+it('shows every published project with its images on the case studies page', function () {
+    $case = CaseStudy::create(['title' => 'Portail client', 'slug' => 'portail-client', 'client_name' => 'Client discret', 'sector' => 'Banque', 'summary' => 's',
+        'body' => '<p>Détails</p>', 'status' => 'published', 'publication_consent' => true, 'year' => 2026]);
+    $case->images()->create(['image' => 'cases/ecran.webp', 'caption' => "Écran d'accueil"]);
+    CaseStudy::create(['title' => 'Sans accord', 'slug' => 'sans-accord', 'sector' => 'Banque', 'summary' => 's', 'body' => '<p>Détails</p>', 'status' => 'published']);
+
+    $this->get('/realisations')->assertOk()->assertInertia(fn (Assert $page) => $page->component('Site/Cases')
+        ->has('cases', 1)
+        ->where('cases.0.title', 'Portail client')
+        ->where('cases.0.client', '')
+        ->where('cases.0.year', 2026)
+        ->where('cases.0.images.0.caption', "Écran d'accueil"));
+});
+
+it('shows the free details of a solution without imposed sections', function () {
+    $ai = ServiceCategory::where('slug', 'intelligence-artificielle')->first();
+    Product::create(['service_category_id' => $ai->id, 'name' => 'Assistant IA', 'slug' => 'assistant-ia', 'tagline' => 't', 'summary' => 's', 'is_published' => true,
+        'description' => '<h2>Comment ça marche</h2><p>Détails</p>']);
+
+    $this->get('/solutions/assistant-ia')->assertOk()->assertInertia(fn (Assert $page) => $page->component('Site/Product')
+        ->where('product.description', '<h2>Comment ça marche</h2><p>Détails</p>')
+        ->missing('product.benefits')->missing('product.audience'));
 });

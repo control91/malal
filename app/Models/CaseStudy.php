@@ -17,7 +17,7 @@ class CaseStudy extends Model
 
     protected $guarded = ['id'];
 
-    protected array $richText = ['challenge', 'solution', 'results'];
+    protected array $richText = ['body'];
 
     protected function casts(): array
     {

@@ -19,6 +19,7 @@ Route::get('expertises/{slug}', [Site\ExpertiseController::class, 'show'])->name
 Route::get('solutions', [Site\ProductController::class, 'index'])->name('solutions.index');
 Route::get('solutions/{slug}', [Site\ProductController::class, 'show'])->name('solutions.show');
 Route::get('tarifs', [Site\PricingController::class, 'index'])->name('pricing');
+Route::get('ia', [Site\ProductController::class, 'ai'])->name('ai');
 Route::get('blog', [Site\BlogController::class, 'index'])->name('blog.index');
 Route::get('blog/categorie/{slug}', [Site\BlogController::class, 'category'])->name('blog.category');
 Route::get('blog/etiquette/{slug}', [Site\BlogController::class, 'tag'])->name('blog.tag');
@@ -105,6 +106,7 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.ip', 'auth', 'active'
     Route::post('notifications/{notification}/lire', [Admin\NotificationController::class, 'read'])->name('notifications.read');
 
     // Generic CRUD for every registered resource (see app/Admin/Resources).
+    Route::post('{resource}/image-editeur', [Admin\EditorImageController::class, 'store'])->middleware('throttle:60,1')->name('editor.image');
     Route::get('{resource}', [Admin\ResourceController::class, 'index'])->name('resources.index');
     Route::get('{resource}/nouveau', [Admin\ResourceController::class, 'create'])->name('resources.create');
     Route::post('{resource}', [Admin\ResourceController::class, 'store'])->name('resources.store');

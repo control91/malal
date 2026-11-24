@@ -25,6 +25,6 @@ class PricingController extends Controller
             ]);
 
         return Inertia::render('Site/Pricing', ['tables' => $tables])
-            ->with('seo', Seo::make('Tarifs', 'Des offres transparentes, mensuelles ou annuelles, et des devis sur mesure.'));
+            ->with('seo', Seo::make('Hébergement web', 'Hébergement web et offres cloud : formules mensuelles ou annuelles aux prix indicatifs, et devis sur mesure.'));
     }
 }
